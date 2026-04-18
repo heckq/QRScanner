@@ -46,10 +46,10 @@
     }
 
     .app {
-      max-width: 1280px;
+      max-width: 1320px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 290px minmax(0, 1fr);
+      grid-template-columns: 310px minmax(0, 1fr);
       gap: 14px;
       align-items: start;
       animation: app-in 420ms ease-out;
@@ -94,6 +94,15 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.35;
+    }
+
+    .section-label {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #3a5c79;
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
     }
 
     .menu-wrap {
@@ -157,7 +166,17 @@
       background: #eef5fb;
     }
 
-    .sheet-list {
+    .menu-item.danger {
+      border-color: #f1cccc;
+      background: #fff6f6;
+      color: #9e2f2f;
+    }
+
+    .menu-item.danger:hover {
+      background: #ffecec;
+    }
+
+    .book-list {
       border: 1px solid var(--line);
       border-radius: var(--radius-md);
       background: var(--surface-soft);
@@ -165,10 +184,10 @@
       display: grid;
       gap: 8px;
       overflow: auto;
-      min-height: 120px;
+      min-height: 140px;
     }
 
-    .sheet-btn {
+    .book-btn {
       border: 1px solid #d7e3ee;
       border-radius: 11px;
       padding: 10px;
@@ -176,31 +195,31 @@
       cursor: pointer;
       text-align: left;
       display: grid;
-      gap: 4px;
+      gap: 5px;
       transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
       animation: list-item-in 320ms ease both;
     }
 
-    .sheet-btn:hover {
+    .book-btn:hover {
       transform: translateY(-1px);
       border-color: #b6cadb;
       box-shadow: var(--shadow-sm);
     }
 
-    .sheet-btn.active {
+    .book-btn.active {
       border-color: #6ecfc8;
       background: linear-gradient(140deg, #ecfffc, #f4fffc);
       box-shadow: 0 8px 16px rgba(14, 165, 166, 0.15);
     }
 
-    .sheet-name {
+    .book-name {
       font-size: 15px;
       font-weight: 700;
       line-height: 1.2;
       color: #163852;
     }
 
-    .sheet-meta {
+    .book-meta {
       font-size: 12px;
       color: var(--muted);
     }
@@ -243,6 +262,7 @@
       margin: 4px 0 0;
       color: var(--muted);
       font-size: 13px;
+      line-height: 1.3;
     }
 
     .save-badge {
@@ -256,6 +276,58 @@
       white-space: nowrap;
     }
 
+    .sheet-tabs-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+      padding: 10px;
+      box-shadow: var(--shadow-sm);
+      display: grid;
+      gap: 8px;
+    }
+
+    .sheet-tabs {
+      display: flex;
+      gap: 8px;
+      overflow: auto;
+      padding-bottom: 2px;
+      min-height: 40px;
+      align-items: stretch;
+    }
+
+    .sheet-tabs.empty {
+      border: 1px dashed #cedbe7;
+      border-radius: 10px;
+      padding: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .sheet-tab {
+      border: 1px solid #d6e4ef;
+      background: #f7fbff;
+      color: #244967;
+      border-radius: 10px;
+      padding: 8px 11px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+    }
+
+    .sheet-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sheet-tab.active {
+      border-color: #6ecfc8;
+      background: linear-gradient(145deg, #e9fffa, #f4fffb);
+      color: #16564e;
+      box-shadow: 0 7px 14px rgba(14, 165, 166, 0.14);
+    }
+
     .grid-card {
       border: 1px solid var(--line);
       border-radius: var(--radius-md);
@@ -266,7 +338,7 @@
 
     .grid-wrap {
       overflow: auto;
-      max-height: calc(100vh - 220px);
+      max-height: calc(100vh - 290px);
       min-height: 420px;
       background: linear-gradient(180deg, #ffffff, #fdfefe);
     }
@@ -461,12 +533,12 @@
         max-height: none;
       }
 
-      .sheet-list {
+      .book-list {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .grid-wrap {
-        max-height: calc(100vh - 340px);
+        max-height: calc(100vh - 360px);
       }
     }
 
@@ -475,7 +547,7 @@
         padding: 10px;
       }
 
-      .sheet-list {
+      .book-list {
         grid-template-columns: 1fr;
       }
 
@@ -540,18 +612,22 @@
     <aside class="panel sidebar">
       <section class="brand">
         <h1>Графіки</h1>
-        <p>Проста таблиця для нотаток, планів та значень у форматі 30x60.</p>
+        <p>Листи по містах, аркуші по місяцях і таблиці 30x60.</p>
       </section>
 
       <section class="menu-wrap">
         <button id="menuToggle" class="menu-btn" type="button">Меню ▾</button>
         <div id="menuPanel" class="menu-panel hidden">
+          <button id="addBookAction" class="menu-item" type="button">+ Додати новий лист</button>
           <button id="addSheetAction" class="menu-item" type="button">+ Додати новий аркуш</button>
+          <button id="deleteBookAction" class="menu-item danger" type="button">Видалити активний лист</button>
+          <button id="deleteSheetAction" class="menu-item danger" type="button">Видалити активний аркуш</button>
         </div>
       </section>
 
       <section>
-        <div id="sheetList" class="sheet-list"></div>
+        <p class="section-label">Листи Міст</p>
+        <div id="bookList" class="book-list"></div>
       </section>
     </aside>
 
@@ -559,10 +635,15 @@
       <header class="topbar">
         <div class="title-group">
           <h2 id="activeSheetTitle">Аркуш</h2>
-          <p id="activeSheetMeta">30 рядків, 60 стовпців</p>
+          <p id="activeSheetMeta">Лист | 30 рядків, 60 стовпців</p>
         </div>
         <div id="saveBadge" class="save-badge">Збережено локально</div>
       </header>
+
+      <section class="sheet-tabs-card">
+        <p class="section-label">Аркуші Активного Листа</p>
+        <div id="sheetTabs" class="sheet-tabs"></div>
+      </section>
 
       <section class="grid-card">
         <div id="gridWrap" class="grid-wrap">
@@ -572,37 +653,92 @@
             </thead>
             <tbody id="gridBody"></tbody>
           </table>
-          <div id="emptyNote" class="empty-note" hidden>Немає доступних аркушів. Додайте аркуш через меню.</div>
+          <div id="emptyNote" class="empty-note" hidden>Немає доступного аркуша. Додайте аркуш через меню.</div>
         </div>
       </section>
     </section>
   </main>
 
-  <div id="sheetModalBackdrop" class="modal-backdrop hidden">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="sheetModalTitle">
-      <h3 id="sheetModalTitle">Новий аркуш</h3>
-      <p>Вкажіть назву, і аркуш одразу відкриється для редагування.</p>
+  <div id="nameModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
+      <h3 id="nameModalTitle">Новий об'єкт</h3>
+      <p id="nameModalDescription">Вкажіть назву.</p>
       <div class="field">
-        <label for="sheetNameInput">Назва аркуша</label>
-        <input id="sheetNameInput" type="text" maxlength="60" placeholder="Наприклад: Львів">
+        <label id="nameInputLabel" for="nameInput">Назва</label>
+        <input id="nameInput" type="text" maxlength="60" placeholder="Назва">
       </div>
-      <div id="sheetError" class="error"></div>
+      <div id="nameError" class="error"></div>
       <div class="modal-actions">
-        <button id="cancelSheetBtn" class="btn secondary" type="button">Скасувати</button>
-        <button id="createSheetBtn" class="btn primary" type="button">Створити</button>
+        <button id="cancelNameBtn" class="btn secondary" type="button">Скасувати</button>
+        <button id="createNameBtn" class="btn primary" type="button">Створити</button>
       </div>
     </div>
   </div>
 
+  <script src="./uzhhorod_2026_april_data.js"></script>
   <script>
     (function () {
       const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 
-      const STORAGE_KEY = "vevi_charts_sheets_v1";
+      const STORAGE_KEY = "vevi_charts_books_v2";
+      const LEGACY_STORAGE_KEY = "vevi_charts_sheets_v1";
+      const CHARTS_API_URL = resolveApiUrl();
+      const SYNC_INTERVAL_MS = 4000;
       const SHEET_ROWS = 30;
       const SHEET_COLS = 60;
 
-      const sheetList = document.getElementById("sheetList");
+      const WEEKDAY_LABELS = ["нд", "пн", "вт", "ср", "чт", "пт", "сб"];
+      const MONTH_VARIANTS = [
+        { index: 0, display: "Січень", forms: ["січень", "січня"] },
+        { index: 1, display: "Лютий", forms: ["лютий", "лютого"] },
+        { index: 2, display: "Березень", forms: ["березень", "березня"] },
+        { index: 3, display: "Квітень", forms: ["квітень", "квітня"] },
+        { index: 4, display: "Травень", forms: ["травень", "травня"] },
+        { index: 5, display: "Червень", forms: ["червень", "червня"] },
+        { index: 6, display: "Липень", forms: ["липень", "липня"] },
+        { index: 7, display: "Серпень", forms: ["серпень", "серпня"] },
+        { index: 8, display: "Вересень", forms: ["вересень", "вересня"] },
+        { index: 9, display: "Жовтень", forms: ["жовтень", "жовтня"] },
+        { index: 10, display: "Листопад", forms: ["листопад", "листопада"] },
+        { index: 11, display: "Грудень", forms: ["грудень", "грудня"] }
+      ];
+
+      const TEMPLATE_DATA =
+        window.UZHHOROD_2026_APRIL_DATA && typeof window.UZHHOROD_2026_APRIL_DATA === "object"
+          ? window.UZHHOROD_2026_APRIL_DATA
+          : { sheetName: "Квітень", cells: {} };
+      const TEMPLATE_REF_CELLS =
+        TEMPLATE_DATA.cells && typeof TEMPLATE_DATA.cells === "object"
+          ? TEMPLATE_DATA.cells
+          : {};
+
+      const COLUMN_A_TEMPLATE_REFS = [
+        "A2", "A3", "A5", "A6", "A7", "A8", "A9", "A10", "A11", "A12",
+        "A14", "A15", "A18", "A19", "A21", "A22", "A23", "A24"
+      ];
+
+      const TECH_SUMMARY_LABEL_REFS = ["AF4", "AG4", "AH4", "AI4", "AJ4", "AK4", "AL4"];
+      const SCOUT_SUMMARY_LABEL_REFS = ["AF13", "AG13", "AH13", "AI13", "AJ13", "AK13", "AL13"];
+      const SERVICE_SUMMARY_LABEL_REFS = ["AF20", "AG20", "AH20"];
+
+      const TECH_SUMMARY_LABELS = TECH_SUMMARY_LABEL_REFS.map((ref) => getTemplateValue(ref, ""));
+      const SCOUT_SUMMARY_LABELS = SCOUT_SUMMARY_LABEL_REFS.map((ref) => getTemplateValue(ref, ""));
+      const SERVICE_SUMMARY_LABELS = SERVICE_SUMMARY_LABEL_REFS.map((ref) => getTemplateValue(ref, ""));
+
+      const TECH_INFO_TEXT = getTemplateValue(
+        "B4",
+        "Техніки:\nд (07:00 - 19:00) /   н (19:00 - 05:00) / Д (12:00-20:00)"
+      );
+      const SCOUT_INFO_TEXT = getTemplateValue(
+        "B13",
+        "Скаути:\nс1 - з 9:00 до 17:00   /   с2 - з 14:00 до 22:00 (пт-нд)\nС - 10:00 по 20:00 (пн-чт)"
+      );
+      const SERVICE_INFO_TEXT = getTemplateValue("B20", "Сервіс:\n08:00 -18:00");
+
+      const DEFAULT_MONTH_NAME = getTemplateValue("B1", "Квітень");
+
+      const bookList = document.getElementById("bookList");
+      const sheetTabs = document.getElementById("sheetTabs");
       const activeSheetTitle = document.getElementById("activeSheetTitle");
       const activeSheetMeta = document.getElementById("activeSheetMeta");
       const saveBadge = document.getElementById("saveBadge");
@@ -613,96 +749,577 @@
 
       const menuToggle = document.getElementById("menuToggle");
       const menuPanel = document.getElementById("menuPanel");
+      const addBookAction = document.getElementById("addBookAction");
       const addSheetAction = document.getElementById("addSheetAction");
+      const deleteBookAction = document.getElementById("deleteBookAction");
+      const deleteSheetAction = document.getElementById("deleteSheetAction");
 
-      const sheetModalBackdrop = document.getElementById("sheetModalBackdrop");
-      const sheetNameInput = document.getElementById("sheetNameInput");
-      const sheetError = document.getElementById("sheetError");
-      const cancelSheetBtn = document.getElementById("cancelSheetBtn");
-      const createSheetBtn = document.getElementById("createSheetBtn");
+      const nameModalBackdrop = document.getElementById("nameModalBackdrop");
+      const nameModalTitle = document.getElementById("nameModalTitle");
+      const nameModalDescription = document.getElementById("nameModalDescription");
+      const nameInputLabel = document.getElementById("nameInputLabel");
+      const nameInput = document.getElementById("nameInput");
+      const nameError = document.getElementById("nameError");
+      const cancelNameBtn = document.getElementById("cancelNameBtn");
+      const createNameBtn = document.getElementById("createNameBtn");
+
+      let modalMode = "book";
+      let saveTimer = null;
+      let syncTimer = null;
+      let isServerSaving = false;
+      let hasPendingServerSave = false;
+      let serverRevision = 0;
+
+      function resolveApiUrl() {
+        const query = new URLSearchParams(window.location.search);
+        const queryValue = query.get("api");
+        const raw = String(queryValue || window.CHARTS_API_URL || "").trim();
+        return raw || "/api/charts/state";
+      }
+
+      function getTemplateValue(ref, fallback) {
+        const raw = TEMPLATE_REF_CELLS[ref];
+        if (typeof raw === "string" && raw.trim() !== "") {
+          return raw;
+        }
+        return fallback;
+      }
 
       function nowIso() {
         return new Date().toISOString();
       }
 
-      function newSheet(name) {
+      function makeId(prefix) {
+        return prefix + "_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+      }
+
+      function parseRef(ref) {
+        const match = /^([A-Z]+)(\d+)$/.exec(ref);
+        if (!match) {
+          return null;
+        }
         return {
-          id: "sheet_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7),
-          name,
+          col: lettersToColNumber(match[1]),
+          row: Number(match[2])
+        };
+      }
+
+      function lettersToColNumber(letters) {
+        let result = 0;
+        for (let i = 0; i < letters.length; i += 1) {
+          result = result * 26 + (letters.charCodeAt(i) - 64);
+        }
+        return result;
+      }
+
+      function colNumberToLetters(colNumber) {
+        let value = colNumber;
+        let label = "";
+        while (value > 0) {
+          const rem = (value - 1) % 26;
+          label = String.fromCharCode(65 + rem) + label;
+          value = Math.floor((value - 1) / 26);
+        }
+        return label;
+      }
+
+      function toRef(row, col) {
+        return colNumberToLetters(col) + String(row);
+      }
+
+      function refToKey(ref) {
+        const parsed = parseRef(ref);
+        if (!parsed) {
+          return null;
+        }
+        return String(parsed.row - 1) + ":" + String(parsed.col - 1);
+      }
+
+      function setCellByRef(cells, ref, value) {
+        if (value === undefined || value === null || value === "") {
+          return;
+        }
+        const key = refToKey(ref);
+        if (!key) {
+          return;
+        }
+        cells[key] = String(value);
+      }
+
+      function parseMonthInfo(sheetName) {
+        const rawName = String(sheetName || "").trim();
+        const lower = rawName.toLowerCase();
+
+        let monthIndex = null;
+        let monthLabel = rawName || "Аркуш";
+
+        for (let i = 0; i < MONTH_VARIANTS.length; i += 1) {
+          const variant = MONTH_VARIANTS[i];
+          for (let j = 0; j < variant.forms.length; j += 1) {
+            if (lower.includes(variant.forms[j])) {
+              monthIndex = variant.index;
+              monthLabel = variant.display;
+              break;
+            }
+          }
+          if (monthIndex !== null) {
+            break;
+          }
+        }
+
+        const yearMatch = /(20\d{2})/.exec(lower);
+        const year = yearMatch ? Number(yearMatch[1]) : 2026;
+
+        return { monthIndex, monthLabel, year };
+      }
+
+      function placeSummaryLabels(cells, row, summaryStartCol, labels) {
+        for (let i = 0; i < labels.length; i += 1) {
+          if (!labels[i]) {
+            continue;
+          }
+          setCellByRef(cells, toRef(row, summaryStartCol + i), labels[i]);
+        }
+      }
+
+      function buildMonthlyTemplateCells(sheetName) {
+        const cells = {};
+        const monthInfo = parseMonthInfo(sheetName);
+        const dayCount = monthInfo.monthIndex === null
+          ? 30
+          : new Date(monthInfo.year, monthInfo.monthIndex + 1, 0).getDate();
+
+        for (let i = 0; i < COLUMN_A_TEMPLATE_REFS.length; i += 1) {
+          const ref = COLUMN_A_TEMPLATE_REFS[i];
+          const value = getTemplateValue(ref, "");
+          if (value) {
+            setCellByRef(cells, ref, value);
+          }
+        }
+
+        setCellByRef(cells, "B1", monthInfo.monthLabel);
+        setCellByRef(cells, "B17", monthInfo.monthLabel);
+        setCellByRef(cells, "B4", TECH_INFO_TEXT);
+        setCellByRef(cells, "B13", SCOUT_INFO_TEXT);
+        setCellByRef(cells, "B20", SERVICE_INFO_TEXT);
+
+        const dayStartCol = 2;
+        for (let day = 1; day <= dayCount; day += 1) {
+          const col = dayStartCol + day - 1;
+
+          let weekday = "";
+          if (monthInfo.monthIndex !== null) {
+            const dt = new Date(monthInfo.year, monthInfo.monthIndex, day);
+            weekday = WEEKDAY_LABELS[dt.getDay()];
+          } else {
+            const fallbackWeek = ["пн", "вт", "ср", "чт", "пт", "сб", "нд"];
+            weekday = fallbackWeek[(day - 1) % fallbackWeek.length];
+          }
+
+          setCellByRef(cells, toRef(2, col), weekday);
+          setCellByRef(cells, toRef(18, col), weekday);
+          setCellByRef(cells, toRef(3, col), String(day));
+          setCellByRef(cells, toRef(19, col), String(day));
+        }
+
+        const summaryStartCol = dayStartCol + dayCount;
+        placeSummaryLabels(cells, 4, summaryStartCol, TECH_SUMMARY_LABELS);
+        placeSummaryLabels(cells, 13, summaryStartCol, SCOUT_SUMMARY_LABELS);
+        placeSummaryLabels(cells, 20, summaryStartCol, SERVICE_SUMMARY_LABELS);
+
+        return cells;
+      }
+
+      function buildUzhhorodFilledCells() {
+        const refs = TEMPLATE_REF_CELLS;
+        if (!refs || !Object.keys(refs).length) {
+          return buildMonthlyTemplateCells(DEFAULT_MONTH_NAME);
+        }
+
+        const cells = {};
+        const entries = Object.entries(refs);
+        for (let i = 0; i < entries.length; i += 1) {
+          const entry = entries[i];
+          setCellByRef(cells, entry[0], entry[1]);
+        }
+        return cells;
+      }
+
+      function createSheet(name, cells) {
+        return {
+          id: makeId("sheet"),
+          name: String(name || "Аркуш").trim() || "Аркуш",
           rows: SHEET_ROWS,
           cols: SHEET_COLS,
-          cells: {},
+          cells: cells ? { ...cells } : buildMonthlyTemplateCells(name),
+          createdAt: nowIso(),
+          updatedAt: nowIso()
+        };
+      }
+
+      function createBook(name, firstSheetName, firstSheetCells) {
+        const sheet = createSheet(firstSheetName || DEFAULT_MONTH_NAME, firstSheetCells);
+        return {
+          id: makeId("book"),
+          name: String(name || "Лист").trim() || "Лист",
+          sheets: [sheet],
           createdAt: nowIso(),
           updatedAt: nowIso()
         };
       }
 
       function defaultState() {
-        const names = ["Ужгород", "Чернівці", "Хмельницький"];
-        const sheets = names.map((name) => newSheet(name));
+        const testSheetName = DEFAULT_MONTH_NAME + " (тест)";
+        const books = [
+          createBook("Ужгород", testSheetName, buildUzhhorodFilledCells()),
+          createBook("Чернівці", DEFAULT_MONTH_NAME),
+          createBook("Хмельницький", DEFAULT_MONTH_NAME)
+        ];
+
         return {
-          version: 1,
-          activeSheetId: sheets[0].id,
-          sheets
+          version: 2,
+          activeBookId: books[0].id,
+          activeSheetId: books[0].sheets[0].id,
+          books
         };
       }
 
-      function normalizeState(raw) {
-        if (!raw || typeof raw !== "object") {
-          return defaultState();
+      function normalizeCells(rawCells) {
+        if (!rawCells || typeof rawCells !== "object") {
+          return {};
         }
 
-        const sheets = Array.isArray(raw.sheets)
-          ? raw.sheets
-            .filter((sheet) => sheet && typeof sheet === "object")
-            .map((sheet) => ({
-              id: typeof sheet.id === "string" && sheet.id ? sheet.id : newSheet("Аркуш").id,
-              name: typeof sheet.name === "string" && sheet.name.trim() ? sheet.name.trim() : "Без назви",
-              rows: SHEET_ROWS,
-              cols: SHEET_COLS,
-              cells: sheet.cells && typeof sheet.cells === "object" ? sheet.cells : {},
-              createdAt: typeof sheet.createdAt === "string" ? sheet.createdAt : nowIso(),
-              updatedAt: typeof sheet.updatedAt === "string" ? sheet.updatedAt : nowIso()
-            }))
+        const output = {};
+        const entries = Object.entries(rawCells);
+        for (let i = 0; i < entries.length; i += 1) {
+          const [key, value] = entries[i];
+          if (!/^\d+:\d+$/.test(key)) {
+            continue;
+          }
+          if (value === undefined || value === null || value === "") {
+            continue;
+          }
+          output[key] = String(value);
+        }
+        return output;
+      }
+
+      function normalizeSheet(rawSheet) {
+        if (!rawSheet || typeof rawSheet !== "object") {
+          return createSheet(DEFAULT_MONTH_NAME);
+        }
+
+        const name = String(rawSheet.name || DEFAULT_MONTH_NAME).trim() || DEFAULT_MONTH_NAME;
+        const normalizedCells = normalizeCells(rawSheet.cells);
+
+        return {
+          id: typeof rawSheet.id === "string" && rawSheet.id ? rawSheet.id : makeId("sheet"),
+          name,
+          rows: SHEET_ROWS,
+          cols: SHEET_COLS,
+          cells: normalizedCells,
+          createdAt: typeof rawSheet.createdAt === "string" ? rawSheet.createdAt : nowIso(),
+          updatedAt: typeof rawSheet.updatedAt === "string" ? rawSheet.updatedAt : nowIso()
+        };
+      }
+
+      function normalizeBook(rawBook) {
+        if (!rawBook || typeof rawBook !== "object") {
+          return createBook("Лист", DEFAULT_MONTH_NAME);
+        }
+
+        const normalizedSheets = Array.isArray(rawBook.sheets)
+          ? rawBook.sheets.map(normalizeSheet).filter(Boolean)
           : [];
 
-        if (!sheets.length) {
-          return defaultState();
+        if (!normalizedSheets.length) {
+          normalizedSheets.push(createSheet(DEFAULT_MONTH_NAME));
         }
 
-        const activeExists = sheets.some((sheet) => sheet.id === raw.activeSheetId);
         return {
-          version: 1,
-          activeSheetId: activeExists ? raw.activeSheetId : sheets[0].id,
-          sheets
+          id: typeof rawBook.id === "string" && rawBook.id ? rawBook.id : makeId("book"),
+          name: String(rawBook.name || "Лист").trim() || "Лист",
+          sheets: normalizedSheets,
+          createdAt: typeof rawBook.createdAt === "string" ? rawBook.createdAt : nowIso(),
+          updatedAt: typeof rawBook.updatedAt === "string" ? rawBook.updatedAt : nowIso()
         };
       }
 
-      function loadState() {
+      function normalizeState(rawState) {
+        if (!rawState || typeof rawState !== "object") {
+          return defaultState();
+        }
+
+        const books = Array.isArray(rawState.books)
+          ? rawState.books.map(normalizeBook).filter(Boolean)
+          : [];
+
+        if (!books.length) {
+          return defaultState();
+        }
+
+        let activeBookId = typeof rawState.activeBookId === "string" ? rawState.activeBookId : "";
+        if (!books.some((book) => book.id === activeBookId)) {
+          activeBookId = books[0].id;
+        }
+
+        const activeBook = books.find((book) => book.id === activeBookId) || books[0];
+
+        let activeSheetId = typeof rawState.activeSheetId === "string" ? rawState.activeSheetId : "";
+        if (!activeBook.sheets.some((sheet) => sheet.id === activeSheetId)) {
+          activeSheetId = activeBook.sheets[0].id;
+        }
+
+        return {
+          version: 2,
+          activeBookId,
+          activeSheetId,
+          books
+        };
+      }
+
+      function ensureUzhhorodTestSheet(rawState) {
+        const next = normalizeState(rawState);
+        const testSheetName = DEFAULT_MONTH_NAME + " (тест)";
+
+        const uzhBook = next.books.find(
+          (book) => String(book.name || "").trim().toLowerCase() === "ужгород"
+        );
+
+        if (!uzhBook) {
+          const testBook = createBook("Ужгород", testSheetName, buildUzhhorodFilledCells());
+          next.books.unshift(testBook);
+          next.activeBookId = testBook.id;
+          next.activeSheetId = testBook.sheets[0].id;
+          return next;
+        }
+
+        const hasTestSheet = uzhBook.sheets.some((sheet) =>
+          String(sheet.name || "").toLowerCase().includes("тест")
+        );
+
+        if (!hasTestSheet) {
+          const testSheet = createSheet(testSheetName, buildUzhhorodFilledCells());
+          uzhBook.sheets.unshift(testSheet);
+          uzhBook.updatedAt = nowIso();
+
+          if (next.activeBookId === uzhBook.id) {
+            next.activeSheetId = testSheet.id;
+          }
+        }
+
+        return next;
+      }
+
+      function convertLegacyState(rawLegacy) {
+        if (!rawLegacy || typeof rawLegacy !== "object") {
+          return null;
+        }
+
+        const legacySheets = Array.isArray(rawLegacy.sheets) ? rawLegacy.sheets : [];
+        if (!legacySheets.length) {
+          return null;
+        }
+
+        const books = [];
+        for (let i = 0; i < legacySheets.length; i += 1) {
+          const legacy = legacySheets[i];
+          const sheetName = String(legacy && legacy.name ? legacy.name : "Аркуш").trim() || "Аркуш";
+          const normalizedLegacySheet = {
+            id: makeId("sheet"),
+            name: DEFAULT_MONTH_NAME,
+            rows: SHEET_ROWS,
+            cols: SHEET_COLS,
+            cells: normalizeCells(legacy && legacy.cells ? legacy.cells : {}),
+            createdAt: nowIso(),
+            updatedAt: nowIso()
+          };
+
+          books.push({
+            id: makeId("book"),
+            name: sheetName,
+            sheets: [normalizedLegacySheet],
+            createdAt: nowIso(),
+            updatedAt: nowIso()
+          });
+        }
+
+        if (!books.length) {
+          return null;
+        }
+
+        return {
+          version: 2,
+          activeBookId: books[0].id,
+          activeSheetId: books[0].sheets[0].id,
+          books
+        };
+      }
+
+      function loadLocalState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) {
-            return defaultState();
+          if (raw) {
+            return ensureUzhhorodTestSheet(JSON.parse(raw));
           }
-          return normalizeState(JSON.parse(raw));
+
+          const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
+          if (legacyRaw) {
+            const converted = convertLegacyState(JSON.parse(legacyRaw));
+            if (converted) {
+              return ensureUzhhorodTestSheet(converted);
+            }
+          }
         } catch {
           return defaultState();
         }
+
+        return defaultState();
       }
 
-      let state = loadState();
-      let saveTimer = null;
+      let state = loadLocalState();
 
       function setSavedStatus(message) {
         saveBadge.textContent = message;
       }
 
-      function persistState() {
+      function persistStateLocal() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-          setSavedStatus("Збережено локально");
         } catch {
           setSavedStatus("Не вдалося зберегти");
+        }
+      }
+
+      async function fetchServerState() {
+        const response = await fetch(CHARTS_API_URL, {
+          method: "GET",
+          headers: {
+            "Accept": "application/json"
+          },
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error("HTTP " + String(response.status));
+        }
+
+        const payload = await response.json();
+        if (!payload || payload.ok !== true) {
+          throw new Error("Invalid server payload");
+        }
+
+        return payload;
+      }
+
+      async function pushStateToServer() {
+        if (isServerSaving) {
+          hasPendingServerSave = true;
+          return;
+        }
+
+        isServerSaving = true;
+        try {
+          const response = await fetch(CHARTS_API_URL, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({ state: state })
+          });
+
+          if (!response.ok) {
+            throw new Error("HTTP " + String(response.status));
+          }
+
+          const payload = await response.json();
+          if (!payload || payload.ok !== true) {
+            throw new Error("Invalid server payload");
+          }
+
+          const revision = Number(payload.revision || 0);
+          if (Number.isFinite(revision) && revision > 0) {
+            serverRevision = revision;
+          }
+
+          persistStateLocal();
+          setSavedStatus("Збережено на сервері");
+        } catch {
+          setSavedStatus("Локально збережено, сервер недоступний");
+        } finally {
+          isServerSaving = false;
+          if (hasPendingServerSave) {
+            hasPendingServerSave = false;
+            void pushStateToServer();
+          }
+        }
+      }
+
+      async function pollServerState() {
+        if (isServerSaving || saveTimer !== null) {
+          return;
+        }
+
+        try {
+          const payload = await fetchServerState();
+          const incomingRevision = Number(payload.revision || 0);
+
+          if (!Number.isFinite(incomingRevision) || incomingRevision <= serverRevision) {
+            return;
+          }
+
+          serverRevision = incomingRevision;
+
+          if (!payload.state || typeof payload.state !== "object") {
+            return;
+          }
+
+          state = ensureUzhhorodTestSheet(payload.state);
+          renderAll();
+          persistStateLocal();
+          setSavedStatus("Оновлено із сервера");
+        } catch {
+          // Ignore polling errors; manual edits continue to work locally.
+        }
+      }
+
+      function startServerSync() {
+        if (syncTimer) {
+          clearInterval(syncTimer);
+        }
+
+        syncTimer = setInterval(() => {
+          void pollServerState();
+        }, SYNC_INTERVAL_MS);
+      }
+
+      async function initializeState() {
+        setSavedStatus("Завантаження з сервера...");
+
+        try {
+          const payload = await fetchServerState();
+          const revision = Number(payload.revision || 0);
+          if (Number.isFinite(revision) && revision > 0) {
+            serverRevision = revision;
+          }
+
+          if (payload.state && typeof payload.state === "object") {
+            state = ensureUzhhorodTestSheet(payload.state);
+            renderAll();
+            persistStateLocal();
+            setSavedStatus("Синхронізовано з сервером");
+          } else {
+            state = ensureUzhhorodTestSheet(state);
+            renderAll();
+            persistStateLocal();
+            await pushStateToServer();
+          }
+        } catch {
+          persistStateLocal();
+          setSavedStatus("Локально збережено, сервер недоступний");
+        } finally {
+          startServerSync();
         }
       }
 
@@ -712,22 +1329,27 @@
           clearTimeout(saveTimer);
         }
         saveTimer = setTimeout(() => {
-          persistState();
+          saveTimer = null;
+          persistStateLocal();
+          void pushStateToServer();
         }, 220);
       }
 
-      function colLabel(index) {
-        let value = index;
-        let label = "";
-        while (value >= 0) {
-          label = String.fromCharCode(65 + (value % 26)) + label;
-          value = Math.floor(value / 26) - 1;
+      function activeBook() {
+        return state.books.find((book) => book.id === state.activeBookId) || null;
+      }
+
+      function activeSheet() {
+        const book = activeBook();
+        if (!book) {
+          return null;
         }
-        return label;
+        return book.sheets.find((sheet) => sheet.id === state.activeSheetId) || null;
       }
 
       function buildGridSkeleton() {
         gridHeadRow.innerHTML = "";
+
         const corner = document.createElement("th");
         corner.className = "corner";
         corner.textContent = "#";
@@ -735,13 +1357,14 @@
 
         for (let c = 0; c < SHEET_COLS; c += 1) {
           const th = document.createElement("th");
-          th.textContent = colLabel(c);
+          th.textContent = colNumberToLetters(c + 1);
           gridHeadRow.appendChild(th);
         }
 
-        const frag = document.createDocumentFragment();
+        const fragment = document.createDocumentFragment();
         for (let r = 0; r < SHEET_ROWS; r += 1) {
           const tr = document.createElement("tr");
+
           const rowHead = document.createElement("th");
           rowHead.textContent = String(r + 1);
           tr.appendChild(rowHead);
@@ -756,53 +1379,83 @@
             tr.appendChild(td);
           }
 
-          frag.appendChild(tr);
+          fragment.appendChild(tr);
         }
+
         gridBody.innerHTML = "";
-        gridBody.appendChild(frag);
+        gridBody.appendChild(fragment);
       }
 
-      function activeSheet() {
-        return state.sheets.find((sheet) => sheet.id === state.activeSheetId) || null;
-      }
+      function renderBookList() {
+        bookList.innerHTML = "";
 
-      function renderSheetList() {
-        sheetList.innerHTML = "";
-
-        for (let i = 0; i < state.sheets.length; i += 1) {
-          const sheet = state.sheets[i];
+        for (let i = 0; i < state.books.length; i += 1) {
+          const book = state.books[i];
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "sheet-btn" + (sheet.id === state.activeSheetId ? " active" : "");
-          btn.style.animationDelay = (i * 35) + "ms";
-          btn.setAttribute("data-sheet-id", sheet.id);
+          btn.className = "book-btn" + (book.id === state.activeBookId ? " active" : "");
+          btn.style.animationDelay = String(i * 35) + "ms";
+          btn.setAttribute("data-book-id", book.id);
 
           const name = document.createElement("div");
-          name.className = "sheet-name";
-          name.textContent = sheet.name;
+          name.className = "book-name";
+          name.textContent = book.name;
 
           const meta = document.createElement("div");
-          meta.className = "sheet-meta";
-          meta.textContent = sheet.rows + " рядків x " + sheet.cols + " стовпців";
+          meta.className = "book-meta";
+          meta.textContent = String(book.sheets.length) + " аркуш(ів)";
 
           btn.appendChild(name);
           btn.appendChild(meta);
-          sheetList.appendChild(btn);
+          bookList.appendChild(btn);
         }
       }
 
-      function renderActiveSheet() {
+      function renderSheetTabs() {
+        const book = activeBook();
+        sheetTabs.innerHTML = "";
+
+        if (!book || !book.sheets.length) {
+          sheetTabs.classList.add("empty");
+          sheetTabs.textContent = "Для активного листа ще немає аркушів.";
+          return;
+        }
+
+        sheetTabs.classList.remove("empty");
+
+        for (let i = 0; i < book.sheets.length; i += 1) {
+          const sheet = book.sheets[i];
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "sheet-tab" + (sheet.id === state.activeSheetId ? " active" : "");
+          button.setAttribute("data-sheet-id", sheet.id);
+          button.textContent = sheet.name;
+          sheetTabs.appendChild(button);
+        }
+      }
+
+      function renderHeader() {
+        const book = activeBook();
+        const sheet = activeSheet();
+
+        if (!book || !sheet) {
+          activeSheetTitle.textContent = "Немає активного аркуша";
+          activeSheetMeta.textContent = "Створіть лист та аркуш через меню";
+          return;
+        }
+
+        activeSheetTitle.textContent = sheet.name;
+        activeSheetMeta.textContent = "Лист: " + book.name + " | Розмір: " + sheet.rows + "x" + sheet.cols;
+      }
+
+      function renderGridValues() {
         const sheet = activeSheet();
         if (!sheet) {
-          activeSheetTitle.textContent = "Немає аркушів";
-          activeSheetMeta.textContent = "Додайте новий аркуш через меню";
           emptyNote.hidden = false;
           gridTable.hidden = true;
           return;
         }
 
-        activeSheetTitle.textContent = sheet.name;
-        activeSheetMeta.textContent = sheet.rows + " рядків, " + sheet.cols + " стовпців";
         emptyNote.hidden = true;
         gridTable.hidden = false;
 
@@ -811,52 +1464,45 @@
           const input = inputs[i];
           const r = input.getAttribute("data-r");
           const c = input.getAttribute("data-c");
-          const key = r + ":" + c;
-          input.value = Object.prototype.hasOwnProperty.call(sheet.cells, key) ? String(sheet.cells[key]) : "";
+          const key = String(r) + ":" + String(c);
+          input.value = Object.prototype.hasOwnProperty.call(sheet.cells, key)
+            ? String(sheet.cells[key])
+            : "";
         }
       }
 
-      function switchToSheet(sheetId) {
-        if (!state.sheets.some((sheet) => sheet.id === sheetId)) {
+      function renderAll() {
+        renderBookList();
+        renderSheetTabs();
+        renderHeader();
+        renderGridValues();
+      }
+
+      function switchToBook(bookId) {
+        const book = state.books.find((item) => item.id === bookId);
+        if (!book) {
           return;
         }
-        state.activeSheetId = sheetId;
-        renderSheetList();
-        renderActiveSheet();
+
+        state.activeBookId = book.id;
+        state.activeSheetId = book.sheets.length ? book.sheets[0].id : "";
+
+        renderAll();
         persistStateDebounced();
       }
 
-      function openSheetModal() {
-        sheetError.textContent = "";
-        sheetNameInput.value = "";
-        sheetModalBackdrop.classList.remove("hidden");
-        setTimeout(() => sheetNameInput.focus(), 0);
-      }
-
-      function closeSheetModal() {
-        sheetModalBackdrop.classList.add("hidden");
-      }
-
-      function createSheetFromModal() {
-        const rawName = sheetNameInput.value.trim();
-        if (!rawName) {
-          sheetError.textContent = "Введіть назву аркуша.";
+      function switchToSheet(sheetId) {
+        const book = activeBook();
+        if (!book) {
           return;
         }
 
-        const exists = state.sheets.some((sheet) => sheet.name.toLowerCase() === rawName.toLowerCase());
-        if (exists) {
-          sheetError.textContent = "Аркуш з такою назвою вже існує.";
+        if (!book.sheets.some((sheet) => sheet.id === sheetId)) {
           return;
         }
 
-        const sheet = newSheet(rawName);
-        state.sheets.push(sheet);
-        state.activeSheetId = sheet.id;
-
-        closeSheetModal();
-        renderSheetList();
-        renderActiveSheet();
+        state.activeSheetId = sheetId;
+        renderAll();
         persistStateDebounced();
       }
 
@@ -868,7 +1514,150 @@
         menuPanel.classList.toggle("hidden");
       }
 
-      sheetList.addEventListener("click", (event) => {
+      function openNameModal(mode) {
+        modalMode = mode;
+        nameError.textContent = "";
+        nameInput.value = "";
+
+        if (mode === "book") {
+          nameModalTitle.textContent = "Новий лист";
+          nameModalDescription.textContent = "Лист - це категорія міста (наприклад Ужгород).";
+          nameInputLabel.textContent = "Назва листа";
+          nameInput.placeholder = "Наприклад: Львів";
+        } else {
+          nameModalTitle.textContent = "Новий аркуш";
+          nameModalDescription.textContent = "Аркуш створиться у поточному листі за шаблоном без заповнених д/н.";
+          nameInputLabel.textContent = "Назва аркуша";
+          nameInput.placeholder = "Наприклад: Березень 2026";
+        }
+
+        nameModalBackdrop.classList.remove("hidden");
+        setTimeout(() => nameInput.focus(), 0);
+      }
+
+      function closeNameModal() {
+        nameModalBackdrop.classList.add("hidden");
+      }
+
+      function addBook(name) {
+        const exists = state.books.some((book) => book.name.toLowerCase() === name.toLowerCase());
+        if (exists) {
+          nameError.textContent = "Лист з такою назвою вже існує.";
+          return;
+        }
+
+        const newBook = createBook(name, DEFAULT_MONTH_NAME);
+        state.books.push(newBook);
+        state.activeBookId = newBook.id;
+        state.activeSheetId = newBook.sheets[0].id;
+      }
+
+      function addSheet(name) {
+        const book = activeBook();
+        if (!book) {
+          nameError.textContent = "Спочатку створіть лист.";
+          return;
+        }
+
+        const exists = book.sheets.some((sheet) => sheet.name.toLowerCase() === name.toLowerCase());
+        if (exists) {
+          nameError.textContent = "Аркуш з такою назвою вже є в цьому листі.";
+          return;
+        }
+
+        const cells = buildMonthlyTemplateCells(name);
+        const sheet = createSheet(name, cells);
+        book.sheets.push(sheet);
+        book.updatedAt = nowIso();
+        state.activeSheetId = sheet.id;
+      }
+
+      function handleCreateFromModal() {
+        const rawName = nameInput.value.trim();
+        if (!rawName) {
+          nameError.textContent = "Введіть назву.";
+          return;
+        }
+
+        if (modalMode === "book") {
+          addBook(rawName);
+        } else {
+          addSheet(rawName);
+        }
+
+        if (nameError.textContent) {
+          return;
+        }
+
+        closeNameModal();
+        renderAll();
+        persistStateDebounced();
+      }
+
+      function deleteActiveBook() {
+        const book = activeBook();
+        if (!book) {
+          return;
+        }
+
+        if (state.books.length <= 1) {
+          alert("Потрібно залишити хоча б один лист.");
+          return;
+        }
+
+        const ok = confirm("Видалити лист \"" + book.name + "\" разом з усіма його аркушами?");
+        if (!ok) {
+          return;
+        }
+
+        state.books = state.books.filter((item) => item.id !== book.id);
+        const first = state.books[0];
+        state.activeBookId = first.id;
+        state.activeSheetId = first.sheets[0].id;
+
+        renderAll();
+        persistStateDebounced();
+      }
+
+      function deleteActiveSheet() {
+        const book = activeBook();
+        const sheet = activeSheet();
+
+        if (!book || !sheet) {
+          return;
+        }
+
+        if (book.sheets.length <= 1) {
+          alert("У листі має залишатись хоча б один аркуш.");
+          return;
+        }
+
+        const ok = confirm("Видалити аркуш \"" + sheet.name + "\"?");
+        if (!ok) {
+          return;
+        }
+
+        book.sheets = book.sheets.filter((item) => item.id !== sheet.id);
+        book.updatedAt = nowIso();
+        state.activeSheetId = book.sheets[0].id;
+
+        renderAll();
+        persistStateDebounced();
+      }
+
+      bookList.addEventListener("click", (event) => {
+        const target = event.target.closest("button[data-book-id]");
+        if (!target) {
+          return;
+        }
+        const bookId = target.getAttribute("data-book-id");
+        if (!bookId) {
+          return;
+        }
+        switchToBook(bookId);
+      });
+
+      sheetTabs.addEventListener("click", (event) => {
         const target = event.target.closest("button[data-sheet-id]");
         if (!target) {
           return;
@@ -886,18 +1675,18 @@
           return;
         }
 
+        const sheet = activeSheet();
+        if (!sheet) {
+          return;
+        }
+
         const r = target.getAttribute("data-r");
         const c = target.getAttribute("data-c");
         if (r === null || c === null) {
           return;
         }
 
-        const sheet = activeSheet();
-        if (!sheet) {
-          return;
-        }
-
-        const key = r + ":" + c;
+        const key = String(r) + ":" + String(c);
         const value = target.value;
 
         if (value === "") {
@@ -914,9 +1703,24 @@
         toggleMenu();
       });
 
+      addBookAction.addEventListener("click", () => {
+        closeMenu();
+        openNameModal("book");
+      });
+
       addSheetAction.addEventListener("click", () => {
         closeMenu();
-        openSheetModal();
+        openNameModal("sheet");
+      });
+
+      deleteBookAction.addEventListener("click", () => {
+        closeMenu();
+        deleteActiveBook();
+      });
+
+      deleteSheetAction.addEventListener("click", () => {
+        closeMenu();
+        deleteActiveSheet();
       });
 
       document.addEventListener("click", (event) => {
@@ -928,43 +1732,49 @@
         }
       });
 
-      cancelSheetBtn.addEventListener("click", () => {
-        closeSheetModal();
+      cancelNameBtn.addEventListener("click", () => {
+        closeNameModal();
       });
 
-      createSheetBtn.addEventListener("click", () => {
-        createSheetFromModal();
+      createNameBtn.addEventListener("click", () => {
+        handleCreateFromModal();
       });
 
-      sheetModalBackdrop.addEventListener("click", (event) => {
-        if (event.target === sheetModalBackdrop) {
-          closeSheetModal();
+      nameModalBackdrop.addEventListener("click", (event) => {
+        if (event.target === nameModalBackdrop) {
+          closeNameModal();
         }
       });
 
-      sheetNameInput.addEventListener("keydown", (event) => {
+      nameInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
           event.preventDefault();
-          createSheetFromModal();
+          handleCreateFromModal();
         }
       });
 
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
           closeMenu();
-          closeSheetModal();
+          closeNameModal();
         }
       });
 
       buildGridSkeleton();
-      renderSheetList();
-      renderActiveSheet();
-      persistState();
+      renderAll();
+      persistStateLocal();
+      void initializeState();
 
       if (tg) {
         tg.ready();
         tg.expand();
       }
+
+      window.addEventListener("beforeunload", () => {
+        if (syncTimer) {
+          clearInterval(syncTimer);
+        }
+      });
     })();
   </script>
 </body>
