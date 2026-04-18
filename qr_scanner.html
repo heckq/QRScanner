@@ -320,13 +320,13 @@
       }
 
       const sim = onlyDigits(simInput.value);
-      if (sim.length < 10 || sim.length > 13) {
-        return { error: "SIM має містити від 10 до 13 цифр." };
+      if (!sim) {
+        return { error: "SIM не може бути порожнім." };
       }
 
       const iccid = onlyDigits(iccidInput.value);
-      if (iccid.length < 18) {
-        return { error: "ICCID має містити щонайменше 18 цифр." };
+      if (!iccid) {
+        return { error: "ICCID не може бути порожнім." };
       }
 
       return {
