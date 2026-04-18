@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Графіки - VeviStatsBot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Rubik:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg-1: #eef6ff;
+      --bg-2: #f7fbf7;
+      --surface: #ffffff;
+      --surface-soft: #f6fafc;
+      --line: #dbe6ef;
+      --text: #12263a;
+      --muted: #5f7288;
+      --accent: #0ea5a6;
+      --accent-dark: #0a7d7e;
+      --accent-soft: #d4f5f2;
+      --danger: #d14343;
+      --shadow-lg: 0 18px 34px rgba(16, 44, 72, 0.12);
+      --shadow-sm: 0 6px 14px rgba(16, 44, 72, 0.08);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1100px 420px at 10% -8%, #d8f2ff 0%, transparent 64%),
+        radial-gradient(980px 420px at 110% 0%, #e6f7e6 0%, transparent 62%),
+        linear-gradient(160deg, var(--bg-1), var(--bg-2));
+      padding: 14px;
+    }
+
+    .app {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      animation: app-in 420ms ease-out;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .sidebar {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      position: sticky;
+      top: 12px;
+      max-height: calc(100vh - 28px);
+      overflow: hidden;
+    }
+
+    .brand {
+      display: grid;
+      gap: 6px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #f2fbff, #f9fffb);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-family: "Rubik", "IBM Plex Sans", sans-serif;
+      font-size: 20px;
+      line-height: 1.15;
+      letter-spacing: 0.2px;
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .menu-wrap {
+      position: relative;
+      display: grid;
+      gap: 8px;
+    }
+
+    .menu-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .menu-btn:hover {
+      transform: translateY(-1px);
+      border-color: #bad2e4;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .menu-panel {
+      position: absolute;
+      z-index: 20;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+      box-shadow: var(--shadow-lg);
+      padding: 8px;
+      display: grid;
+      gap: 6px;
+      animation: pop-in 140ms ease-out;
+    }
+
+    .menu-panel.hidden {
+      display: none;
+    }
+
+    .menu-item {
+      border: 1px solid #d7e3ee;
+      background: var(--surface-soft);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1d3c58;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .menu-item:hover {
+      background: #eef5fb;
+    }
+
+    .sheet-list {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface-soft);
+      padding: 8px;
+      display: grid;
+      gap: 8px;
+      overflow: auto;
+      min-height: 120px;
+    }
+
+    .sheet-btn {
+      border: 1px solid #d7e3ee;
+      border-radius: 11px;
+      padding: 10px;
+      background: #fff;
+      cursor: pointer;
+      text-align: left;
+      display: grid;
+      gap: 4px;
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      animation: list-item-in 320ms ease both;
+    }
+
+    .sheet-btn:hover {
+      transform: translateY(-1px);
+      border-color: #b6cadb;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sheet-btn.active {
+      border-color: #6ecfc8;
+      background: linear-gradient(140deg, #ecfffc, #f4fffc);
+      box-shadow: 0 8px 16px rgba(14, 165, 166, 0.15);
+    }
+
+    .sheet-name {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #163852;
+    }
+
+    .sheet-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .main {
+      min-width: 0;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .topbar {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: linear-gradient(160deg, #ffffff, #f4f9fd);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title-group {
+      min-width: 0;
+    }
+
+    .title-group h2 {
+      margin: 0;
+      font-family: "Rubik", "IBM Plex Sans", sans-serif;
+      font-size: 22px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .title-group p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .save-badge {
+      border: 1px solid #bee9df;
+      background: var(--accent-soft);
+      color: #176558;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .grid-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .grid-wrap {
+      overflow: auto;
+      max-height: calc(100vh - 220px);
+      min-height: 420px;
+      background: linear-gradient(180deg, #ffffff, #fdfefe);
+    }
+
+    table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background: #f4f9fc;
+      border-bottom: 1px solid #d3e0eb;
+      border-right: 1px solid #dbe6ef;
+      color: #2b475f;
+      font-weight: 700;
+      text-align: center;
+      min-width: 124px;
+      padding: 8px 6px;
+      font-family: "Rubik", "IBM Plex Sans", sans-serif;
+    }
+
+    thead th.corner {
+      position: sticky;
+      left: 0;
+      z-index: 6;
+      min-width: 52px;
+      background: #eef5fb;
+    }
+
+    tbody th {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background: #f4f9fc;
+      border-right: 1px solid #dbe6ef;
+      border-bottom: 1px solid #e3edf5;
+      color: #3f617f;
+      font-weight: 700;
+      text-align: center;
+      min-width: 52px;
+      padding: 0;
+      font-family: "Rubik", "IBM Plex Sans", sans-serif;
+    }
+
+    td {
+      border-bottom: 1px solid #e8f0f6;
+      border-right: 1px solid #e6eef5;
+      min-width: 124px;
+      height: 34px;
+      padding: 0;
+      background: #fff;
+    }
+
+    td input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      padding: 6px 8px;
+      font-size: 13px;
+      color: #163249;
+      background: transparent;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      transition: background-color 0.12s ease;
+    }
+
+    td input:focus {
+      background: #e9fffa;
+      box-shadow: inset 0 0 0 2px #7fd8cc;
+    }
+
+    .empty-note {
+      padding: 20px;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: rgba(10, 24, 38, 0.38);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      animation: fade-in 180ms ease;
+    }
+
+    .modal-backdrop.hidden {
+      display: none;
+    }
+
+    .modal {
+      width: min(420px, 100%);
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: var(--shadow-lg);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      animation: pop-in 140ms ease-out;
+    }
+
+    .modal h3 {
+      margin: 0;
+      font-family: "Rubik", "IBM Plex Sans", sans-serif;
+      font-size: 21px;
+      line-height: 1.2;
+    }
+
+    .modal p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2a4d68;
+    }
+
+    .field input {
+      border: 1px solid #cfe0ee;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: #7dd6c8;
+      box-shadow: 0 0 0 3px rgba(14, 165, 166, 0.16);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: #eaf1f7;
+      color: #264a66;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn.primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .error {
+      color: var(--danger);
+      font-size: 13px;
+      min-height: 18px;
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+
+      .sheet-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-wrap {
+        max-height: calc(100vh - 340px);
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        padding: 10px;
+      }
+
+      .sheet-list {
+        grid-template-columns: 1fr;
+      }
+
+      thead th {
+        min-width: 108px;
+      }
+
+      td {
+        min-width: 108px;
+      }
+
+      .title-group h2 {
+        font-size: 19px;
+      }
+    }
+
+    @keyframes app-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes list-item-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pop-in {
+      from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside class="panel sidebar">
+      <section class="brand">
+        <h1>Графіки</h1>
+        <p>Проста таблиця для нотаток, планів та значень у форматі 30x60.</p>
+      </section>
+
+      <section class="menu-wrap">
+        <button id="menuToggle" class="menu-btn" type="button">Меню ▾</button>
+        <div id="menuPanel" class="menu-panel hidden">
+          <button id="addSheetAction" class="menu-item" type="button">+ Додати новий аркуш</button>
+        </div>
+      </section>
+
+      <section>
+        <div id="sheetList" class="sheet-list"></div>
+      </section>
+    </aside>
+
+    <section class="panel main">
+      <header class="topbar">
+        <div class="title-group">
+          <h2 id="activeSheetTitle">Аркуш</h2>
+          <p id="activeSheetMeta">30 рядків, 60 стовпців</p>
+        </div>
+        <div id="saveBadge" class="save-badge">Збережено локально</div>
+      </header>
+
+      <section class="grid-card">
+        <div id="gridWrap" class="grid-wrap">
+          <table id="gridTable" aria-label="Таблиця аркуша">
+            <thead>
+              <tr id="gridHeadRow"></tr>
+            </thead>
+            <tbody id="gridBody"></tbody>
+          </table>
+          <div id="emptyNote" class="empty-note" hidden>Немає доступних аркушів. Додайте аркуш через меню.</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="sheetModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="sheetModalTitle">
+      <h3 id="sheetModalTitle">Новий аркуш</h3>
+      <p>Вкажіть назву, і аркуш одразу відкриється для редагування.</p>
+      <div class="field">
+        <label for="sheetNameInput">Назва аркуша</label>
+        <input id="sheetNameInput" type="text" maxlength="60" placeholder="Наприклад: Львів">
+      </div>
+      <div id="sheetError" class="error"></div>
+      <div class="modal-actions">
+        <button id="cancelSheetBtn" class="btn secondary" type="button">Скасувати</button>
+        <button id="createSheetBtn" class="btn primary" type="button">Створити</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+
+      const STORAGE_KEY = "vevi_charts_sheets_v1";
+      const SHEET_ROWS = 30;
+      const SHEET_COLS = 60;
+
+      const sheetList = document.getElementById("sheetList");
+      const activeSheetTitle = document.getElementById("activeSheetTitle");
+      const activeSheetMeta = document.getElementById("activeSheetMeta");
+      const saveBadge = document.getElementById("saveBadge");
+      const gridTable = document.getElementById("gridTable");
+      const gridHeadRow = document.getElementById("gridHeadRow");
+      const gridBody = document.getElementById("gridBody");
+      const emptyNote = document.getElementById("emptyNote");
+
+      const menuToggle = document.getElementById("menuToggle");
+      const menuPanel = document.getElementById("menuPanel");
+      const addSheetAction = document.getElementById("addSheetAction");
+
+      const sheetModalBackdrop = document.getElementById("sheetModalBackdrop");
+      const sheetNameInput = document.getElementById("sheetNameInput");
+      const sheetError = document.getElementById("sheetError");
+      const cancelSheetBtn = document.getElementById("cancelSheetBtn");
+      const createSheetBtn = document.getElementById("createSheetBtn");
+
+      function nowIso() {
+        return new Date().toISOString();
+      }
+
+      function newSheet(name) {
+        return {
+          id: "sheet_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7),
+          name,
+          rows: SHEET_ROWS,
+          cols: SHEET_COLS,
+          cells: {},
+          createdAt: nowIso(),
+          updatedAt: nowIso()
+        };
+      }
+
+      function defaultState() {
+        const names = ["Ужгород", "Чернівці", "Хмельницький"];
+        const sheets = names.map((name) => newSheet(name));
+        return {
+          version: 1,
+          activeSheetId: sheets[0].id,
+          sheets
+        };
+      }
+
+      function normalizeState(raw) {
+        if (!raw || typeof raw !== "object") {
+          return defaultState();
+        }
+
+        const sheets = Array.isArray(raw.sheets)
+          ? raw.sheets
+            .filter((sheet) => sheet && typeof sheet === "object")
+            .map((sheet) => ({
+              id: typeof sheet.id === "string" && sheet.id ? sheet.id : newSheet("Аркуш").id,
+              name: typeof sheet.name === "string" && sheet.name.trim() ? sheet.name.trim() : "Без назви",
+              rows: SHEET_ROWS,
+              cols: SHEET_COLS,
+              cells: sheet.cells && typeof sheet.cells === "object" ? sheet.cells : {},
+              createdAt: typeof sheet.createdAt === "string" ? sheet.createdAt : nowIso(),
+              updatedAt: typeof sheet.updatedAt === "string" ? sheet.updatedAt : nowIso()
+            }))
+          : [];
+
+        if (!sheets.length) {
+          return defaultState();
+        }
+
+        const activeExists = sheets.some((sheet) => sheet.id === raw.activeSheetId);
+        return {
+          version: 1,
+          activeSheetId: activeExists ? raw.activeSheetId : sheets[0].id,
+          sheets
+        };
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            return defaultState();
+          }
+          return normalizeState(JSON.parse(raw));
+        } catch {
+          return defaultState();
+        }
+      }
+
+      let state = loadState();
+      let saveTimer = null;
+
+      function setSavedStatus(message) {
+        saveBadge.textContent = message;
+      }
+
+      function persistState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          setSavedStatus("Збережено локально");
+        } catch {
+          setSavedStatus("Не вдалося зберегти");
+        }
+      }
+
+      function persistStateDebounced() {
+        setSavedStatus("Збереження...");
+        if (saveTimer) {
+          clearTimeout(saveTimer);
+        }
+        saveTimer = setTimeout(() => {
+          persistState();
+        }, 220);
+      }
+
+      function colLabel(index) {
+        let value = index;
+        let label = "";
+        while (value >= 0) {
+          label = String.fromCharCode(65 + (value % 26)) + label;
+          value = Math.floor(value / 26) - 1;
+        }
+        return label;
+      }
+
+      function buildGridSkeleton() {
+        gridHeadRow.innerHTML = "";
+        const corner = document.createElement("th");
+        corner.className = "corner";
+        corner.textContent = "#";
+        gridHeadRow.appendChild(corner);
+
+        for (let c = 0; c < SHEET_COLS; c += 1) {
+          const th = document.createElement("th");
+          th.textContent = colLabel(c);
+          gridHeadRow.appendChild(th);
+        }
+
+        const frag = document.createDocumentFragment();
+        for (let r = 0; r < SHEET_ROWS; r += 1) {
+          const tr = document.createElement("tr");
+          const rowHead = document.createElement("th");
+          rowHead.textContent = String(r + 1);
+          tr.appendChild(rowHead);
+
+          for (let c = 0; c < SHEET_COLS; c += 1) {
+            const td = document.createElement("td");
+            const input = document.createElement("input");
+            input.type = "text";
+            input.setAttribute("data-r", String(r));
+            input.setAttribute("data-c", String(c));
+            td.appendChild(input);
+            tr.appendChild(td);
+          }
+
+          frag.appendChild(tr);
+        }
+        gridBody.innerHTML = "";
+        gridBody.appendChild(frag);
+      }
+
+      function activeSheet() {
+        return state.sheets.find((sheet) => sheet.id === state.activeSheetId) || null;
+      }
+
+      function renderSheetList() {
+        sheetList.innerHTML = "";
+
+        for (let i = 0; i < state.sheets.length; i += 1) {
+          const sheet = state.sheets[i];
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "sheet-btn" + (sheet.id === state.activeSheetId ? " active" : "");
+          btn.style.animationDelay = (i * 35) + "ms";
+          btn.setAttribute("data-sheet-id", sheet.id);
+
+          const name = document.createElement("div");
+          name.className = "sheet-name";
+          name.textContent = sheet.name;
+
+          const meta = document.createElement("div");
+          meta.className = "sheet-meta";
+          meta.textContent = sheet.rows + " рядків x " + sheet.cols + " стовпців";
+
+          btn.appendChild(name);
+          btn.appendChild(meta);
+          sheetList.appendChild(btn);
+        }
+      }
+
+      function renderActiveSheet() {
+        const sheet = activeSheet();
+        if (!sheet) {
+          activeSheetTitle.textContent = "Немає аркушів";
+          activeSheetMeta.textContent = "Додайте новий аркуш через меню";
+          emptyNote.hidden = false;
+          gridTable.hidden = true;
+          return;
+        }
+
+        activeSheetTitle.textContent = sheet.name;
+        activeSheetMeta.textContent = sheet.rows + " рядків, " + sheet.cols + " стовпців";
+        emptyNote.hidden = true;
+        gridTable.hidden = false;
+
+        const inputs = gridBody.querySelectorAll("input[data-r][data-c]");
+        for (let i = 0; i < inputs.length; i += 1) {
+          const input = inputs[i];
+          const r = input.getAttribute("data-r");
+          const c = input.getAttribute("data-c");
+          const key = r + ":" + c;
+          input.value = Object.prototype.hasOwnProperty.call(sheet.cells, key) ? String(sheet.cells[key]) : "";
+        }
+      }
+
+      function switchToSheet(sheetId) {
+        if (!state.sheets.some((sheet) => sheet.id === sheetId)) {
+          return;
+        }
+        state.activeSheetId = sheetId;
+        renderSheetList();
+        renderActiveSheet();
+        persistStateDebounced();
+      }
+
+      function openSheetModal() {
+        sheetError.textContent = "";
+        sheetNameInput.value = "";
+        sheetModalBackdrop.classList.remove("hidden");
+        setTimeout(() => sheetNameInput.focus(), 0);
+      }
+
+      function closeSheetModal() {
+        sheetModalBackdrop.classList.add("hidden");
+      }
+
+      function createSheetFromModal() {
+        const rawName = sheetNameInput.value.trim();
+        if (!rawName) {
+          sheetError.textContent = "Введіть назву аркуша.";
+          return;
+        }
+
+        const exists = state.sheets.some((sheet) => sheet.name.toLowerCase() === rawName.toLowerCase());
+        if (exists) {
+          sheetError.textContent = "Аркуш з такою назвою вже існує.";
+          return;
+        }
+
+        const sheet = newSheet(rawName);
+        state.sheets.push(sheet);
+        state.activeSheetId = sheet.id;
+
+        closeSheetModal();
+        renderSheetList();
+        renderActiveSheet();
+        persistStateDebounced();
+      }
+
+      function closeMenu() {
+        menuPanel.classList.add("hidden");
+      }
+
+      function toggleMenu() {
+        menuPanel.classList.toggle("hidden");
+      }
+
+      sheetList.addEventListener("click", (event) => {
+        const target = event.target.closest("button[data-sheet-id]");
+        if (!target) {
+          return;
+        }
+        const sheetId = target.getAttribute("data-sheet-id");
+        if (!sheetId) {
+          return;
+        }
+        switchToSheet(sheetId);
+      });
+
+      gridBody.addEventListener("input", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) {
+          return;
+        }
+
+        const r = target.getAttribute("data-r");
+        const c = target.getAttribute("data-c");
+        if (r === null || c === null) {
+          return;
+        }
+
+        const sheet = activeSheet();
+        if (!sheet) {
+          return;
+        }
+
+        const key = r + ":" + c;
+        const value = target.value;
+
+        if (value === "") {
+          delete sheet.cells[key];
+        } else {
+          sheet.cells[key] = value;
+        }
+
+        sheet.updatedAt = nowIso();
+        persistStateDebounced();
+      });
+
+      menuToggle.addEventListener("click", () => {
+        toggleMenu();
+      });
+
+      addSheetAction.addEventListener("click", () => {
+        closeMenu();
+        openSheetModal();
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!menuPanel.classList.contains("hidden")) {
+          const inside = menuPanel.contains(event.target) || menuToggle.contains(event.target);
+          if (!inside) {
+            closeMenu();
+          }
+        }
+      });
+
+      cancelSheetBtn.addEventListener("click", () => {
+        closeSheetModal();
+      });
+
+      createSheetBtn.addEventListener("click", () => {
+        createSheetFromModal();
+      });
+
+      sheetModalBackdrop.addEventListener("click", (event) => {
+        if (event.target === sheetModalBackdrop) {
+          closeSheetModal();
+        }
+      });
+
+      sheetNameInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          createSheetFromModal();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeMenu();
+          closeSheetModal();
+        }
+      });
+
+      buildGridSkeleton();
+      renderSheetList();
+      renderActiveSheet();
+      persistState();
+
+      if (tg) {
+        tg.ready();
+        tg.expand();
+      }
+    })();
+  </script>
+</body>
+</html>
