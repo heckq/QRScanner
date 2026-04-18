@@ -181,9 +181,14 @@
 
     <section id="formCard" class="card hidden">
       <h1>Дані Самоката</h1>
-      <p>Поля нижче будуть відправлені в бот. Модель обирається вже в Telegram.</p>
+      <p>Поля нижче будуть відправлені в бот для підтвердження.</p>
 
       <div class="form-grid">
+        <label>
+          Модель самоката
+          <select id="modelSelect"></select>
+        </label>
+
         <label>
           Номер самоката
           <div class="number-row">
@@ -227,6 +232,31 @@
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 
+    const MODELS = [
+      { id: 5, name: "OKAI ES400B - ZK2 (Хуст)" },
+      { id: 8, name: "OKAI ES400B - ZK1 (Тернопіль)" },
+      { id: 2, name: "OKAI ES400B - ZK2 (Волочиськ)" },
+      { id: 22, name: "OKAI 600 - ZK1 (Тернопіль)" },
+      { id: 19, name: "Vevi ES400А - ZK1 (БЦ)" },
+      { id: 10, name: "OKAI ES400B - ZK2 (Івано-Франківськ)" },
+      { id: 25, name: "OKAI ES400B - ZK2 (Хмельницький)" },
+      { id: 24, name: "OKAI ES400B - ZK1 (Хмельницький)" },
+      { id: 20, name: "Vevi ES400А - ZK2 (БЦ)" },
+      { id: 16, name: "OKAI ES400B - ZK2 (Луцьк)" },
+      { id: 9, name: "Freego ES-08S V4.6 (Волочиськ)" },
+      { id: 15, name: "OKAI 600 - ZK2 (Уж)" },
+      { id: 18, name: "OKAI ES400B - ZK1 (Луцьк)" },
+      { id: 21, name: "OKAI 600 - ZK2 (Тернопіль)" },
+      { id: 12, name: "OKAI ES400B - ZK2 (Тернопіль)" },
+      { id: 23, name: "OKAI 600 - ZK2 (КП)" },
+      { id: 17, name: "OKAI 600 - ZK1 (Уж)" },
+      { id: 1, name: "OKAI ES400B - ZK2 (Уж)" },
+      { id: 11, name: "OKAI ES400B - ZK2 (Чернівці)" },
+      { id: 4, name: "OKAI ES400B - ZK2 (Вінн)" },
+      { id: 6, name: "OKAI ES400B - ZK1 (Уж)" },
+      { id: 3, name: "OKAI ES400B - ZK2 (КП)" }
+    ];
+
     const scanBtn = document.getElementById("scanBtn");
     const rescanBtn = document.getElementById("rescanBtn");
     const sendBtn = document.getElementById("sendBtn");
@@ -234,6 +264,7 @@
     const formStatus = document.getElementById("formStatus");
     const formCard = document.getElementById("formCard");
 
+    const modelSelect = document.getElementById("modelSelect");
     const numberSuffixInput = document.getElementById("numberSuffix");
     const imeiInput = document.getElementById("imeiInput");
     const simInput = document.getElementById("simInput");
@@ -267,6 +298,17 @@
 
       const match = text.match(/\d{14,16}/);
       return match ? match[0] : "";
+    }
+
+    function populateModels() {
+      modelSelect.innerHTML = "";
+      for (const model of MODELS) {
+        const option = document.createElement("option");
+        option.value = String(model.id);
+        option.textContent = `${model.name} (id ${model.id})`;
+        modelSelect.appendChild(option);
+      }
+      modelSelect.value = "11";
     }
 
     function onQrScanned(rawText) {
@@ -309,6 +351,11 @@
     }
 
     function validateAndBuildPayload() {
+      const modelId = Number(modelSelect.value || "0");
+      if (!MODELS.some((item) => item.id === modelId)) {
+        return { error: "Оберіть модель самоката." };
+      }
+
       const numberSuffix = onlyDigits(numberSuffixInput.value);
       if (!numberSuffix || numberSuffix.length < 3) {
         return { error: "Введіть номер самоката (тільки цифри після VV)." };
@@ -334,6 +381,7 @@
           type: "qr_device_data",
           scanned_qr: scannedQrText,
           parsed_imei: extractImeiFromQr(scannedQrText),
+          device_model_id: modelId,
           number_suffix: numberSuffix,
           number: `VV${numberSuffix}`,
           uid,
@@ -356,9 +404,14 @@
         return;
       }
 
-      setStatus(formStatus, "Відправляю дані в бот...");
-      tg.sendData(JSON.stringify(result.payload));
-      tg.close();
+      try {
+        setStatus(formStatus, "Відправляю дані в бот...");
+        tg.sendData(JSON.stringify(result.payload));
+        setStatus(formStatus, "Дані відправлено. Повертаю у чат...");
+        setTimeout(() => tg.close(), 250);
+      } catch (error) {
+        setStatus(formStatus, `Не вдалося відправити дані: ${String(error)}`, true);
+      }
     }
 
     numberSuffixInput.addEventListener("input", () => {
@@ -381,9 +434,13 @@
     rescanBtn.addEventListener("click", scanQr);
     sendBtn.addEventListener("click", sendToBot);
 
+    populateModels();
+
     if (tg) {
       tg.ready();
       tg.expand();
+    } else {
+      setStatus(scanStatus, "Відкрийте цю сторінку саме через кнопку бота в Telegram.", true);
     }
 
     setTimeout(scanQr, 250);
