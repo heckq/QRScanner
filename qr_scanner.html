@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>QR Сканер Самоката</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #d9e2ec;
+      --accent: #0ea5e9;
+      --accent-dark: #0284c7;
+      --danger: #dc2626;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #edf6ff 0%, var(--bg) 50%, #eef7f4 100%);
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      display: grid;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    button.primary:hover {
+      background: var(--accent-dark);
+    }
+
+    button.ghost {
+      background: #e8eef5;
+      color: #1e293b;
+    }
+
+    .status {
+      font-size: 14px;
+      color: #0f766e;
+      margin-top: 8px;
+      min-height: 18px;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 11px;
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 84px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .number-row {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .prefix {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      text-align: center;
+      padding: 10px 8px;
+      background: #f8fafc;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Сканування QR</h1>
+      <p>Натисніть кнопку нижче, відскануйте QR-код самоката, після чого заповніть та відправте дані.</p>
+      <div class="actions">
+        <button id="scanBtn" class="primary" type="button">Відкрити камеру та сканувати QR</button>
+      </div>
+      <div id="scanStatus" class="status"></div>
+    </section>
+
+    <section id="formCard" class="card hidden">
+      <h1>Дані Самоката</h1>
+      <p>Поля нижче будуть відправлені в бот для підтвердження.</p>
+
+      <div class="form-grid">
+        <label>
+          Модель самоката
+          <select id="modelSelect"></select>
+        </label>
+
+        <label>
+          Номер самоката
+          <div class="number-row">
+            <div class="prefix">VV</div>
+            <input id="numberSuffix" type="text" inputmode="numeric" autocomplete="off" placeholder="80888">
+          </div>
+          <div class="hint">Префікс VV фіксований. Вводиться лише цифрова частина.</div>
+        </label>
+
+        <label>
+          IMEI (з QR)
+          <input id="imeiInput" type="text" inputmode="numeric" autocomplete="off">
+        </label>
+
+        <label>
+          SIM
+          <input id="simInput" type="text" inputmode="numeric" autocomplete="off" value="123">
+        </label>
+
+        <label>
+          ICCID
+          <input id="iccidInput" type="text" inputmode="numeric" autocomplete="off" value="123">
+        </label>
+
+        <label>
+          Сирі дані QR
+          <textarea id="rawQr" readonly></textarea>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button id="sendBtn" class="primary" type="button">Відправити в бот</button>
+        <button id="rescanBtn" class="ghost" type="button">Сканувати знову</button>
+      </div>
+      <div id="formStatus" class="status"></div>
+    </section>
+
+    <div class="footer">VeviStatsBot mini app</div>
+  </main>
+
+  <script>
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+
+    const MODELS = [
+      { id: 5, name: "OKAI ES400B - ZK2 (Хуст)" },
+      { id: 8, name: "OKAI ES400B - ZK1 (Тернопіль)" },
+      { id: 2, name: "OKAI ES400B - ZK2 (Волочиськ)" },
+      { id: 22, name: "OKAI 600 - ZK1 (Тернопіль)" },
+      { id: 19, name: "Vevi ES400А - ZK1 (БЦ)" },
+      { id: 10, name: "OKAI ES400B - ZK2 (Івано-Франківськ)" },
+      { id: 25, name: "OKAI ES400B - ZK2 (Хмельницький)" },
+      { id: 24, name: "OKAI ES400B - ZK1 (Хмельницький)" },
+      { id: 20, name: "Vevi ES400А - ZK2 (БЦ)" },
+      { id: 16, name: "OKAI ES400B - ZK2 (Луцьк)" },
+      { id: 9, name: "Freego ES-08S V4.6 (Волочиськ)" },
+      { id: 15, name: "OKAI 600 - ZK2 (Уж)" },
+      { id: 18, name: "OKAI ES400B - ZK1 (Луцьк)" },
+      { id: 21, name: "OKAI 600 - ZK2 (Тернопіль)" },
+      { id: 12, name: "OKAI ES400B - ZK2 (Тернопіль)" },
+      { id: 23, name: "OKAI 600 - ZK2 (КП)" },
+      { id: 17, name: "OKAI 600 - ZK1 (Уж)" },
+      { id: 1, name: "OKAI ES400B - ZK2 (Уж)" },
+      { id: 11, name: "OKAI ES400B - ZK2 (Чернівці)" },
+      { id: 4, name: "OKAI ES400B - ZK2 (Вінн)" },
+      { id: 6, name: "OKAI ES400B - ZK1 (Уж)" },
+      { id: 3, name: "OKAI ES400B - ZK2 (КП)" }
+    ];
+
+    const scanBtn = document.getElementById("scanBtn");
+    const rescanBtn = document.getElementById("rescanBtn");
+    const sendBtn = document.getElementById("sendBtn");
+    const scanStatus = document.getElementById("scanStatus");
+    const formStatus = document.getElementById("formStatus");
+    const formCard = document.getElementById("formCard");
+
+    const modelSelect = document.getElementById("modelSelect");
+    const numberSuffixInput = document.getElementById("numberSuffix");
+    const imeiInput = document.getElementById("imeiInput");
+    const simInput = document.getElementById("simInput");
+    const iccidInput = document.getElementById("iccidInput");
+    const rawQr = document.getElementById("rawQr");
+
+    let scannedQrText = "";
+
+    function setStatus(element, text, isError = false) {
+      element.textContent = text;
+      element.classList.toggle("error", isError);
+    }
+
+    function onlyDigits(value) {
+      return String(value || "").replace(/\D+/g, "");
+    }
+
+    function extractImeiFromQr(rawText) {
+      const text = String(rawText || "").trim();
+      if (!text) {
+        return "";
+      }
+
+      const parts = text.split("-");
+      for (const part of parts) {
+        const digits = onlyDigits(part);
+        if (digits.length >= 14 && digits.length <= 16) {
+          return digits;
+        }
+      }
+
+      const match = text.match(/\d{14,16}/);
+      return match ? match[0] : "";
+    }
+
+    function populateModels() {
+      modelSelect.innerHTML = "";
+      for (const model of MODELS) {
+        const option = document.createElement("option");
+        option.value = String(model.id);
+        option.textContent = `${model.name} (id ${model.id})`;
+        modelSelect.appendChild(option);
+      }
+      modelSelect.value = "11";
+    }
+
+    function onQrScanned(rawText) {
+      scannedQrText = String(rawText || "").trim();
+      rawQr.value = scannedQrText;
+
+      const imei = extractImeiFromQr(scannedQrText);
+      imeiInput.value = imei;
+
+      formCard.classList.remove("hidden");
+      setStatus(scanStatus, "QR успішно відскановано.");
+      setStatus(formStatus, "");
+
+      if (!imei) {
+        setStatus(formStatus, "Не вдалося автоматично витягнути IMEI. Введіть його вручну.", true);
+      }
+    }
+
+    function scanQr() {
+      setStatus(scanStatus, "Відкриваю камеру...");
+
+      if (!tg || typeof tg.showScanQrPopup !== "function") {
+        setStatus(
+          scanStatus,
+          "Ця версія Telegram не підтримує вбудований QR сканер mini app.",
+          true
+        );
+        return;
+      }
+
+      tg.showScanQrPopup({ text: "Наведіть камеру на QR-код самоката" }, (qrText) => {
+        tg.closeScanQrPopup();
+        if (!qrText) {
+          setStatus(scanStatus, "QR не зчитано, спробуйте ще раз.", true);
+          return;
+        }
+
+        onQrScanned(qrText);
+      });
+    }
+
+    function validateAndBuildPayload() {
+      const modelId = Number(modelSelect.value || "0");
+      if (!MODELS.some((item) => item.id === modelId)) {
+        return { error: "Оберіть модель самоката." };
+      }
+
+      const numberSuffix = onlyDigits(numberSuffixInput.value);
+      if (!numberSuffix || numberSuffix.length < 3) {
+        return { error: "Введіть номер самоката (тільки цифри після VV)." };
+      }
+
+      const uid = onlyDigits(imeiInput.value);
+      if (uid.length < 14 || uid.length > 16) {
+        return { error: "IMEI має містити від 14 до 16 цифр." };
+      }
+
+      const sim = onlyDigits(simInput.value);
+      if (sim.length < 10 || sim.length > 13) {
+        return { error: "SIM має містити від 10 до 13 цифр." };
+      }
+
+      const iccid = onlyDigits(iccidInput.value);
+      if (iccid.length < 18) {
+        return { error: "ICCID має містити щонайменше 18 цифр." };
+      }
+
+      return {
+        payload: {
+          type: "qr_device_data",
+          scanned_qr: scannedQrText,
+          parsed_imei: extractImeiFromQr(scannedQrText),
+          device_model_id: modelId,
+          number_suffix: numberSuffix,
+          number: `VV${numberSuffix}`,
+          uid,
+          imei: uid,
+          sim,
+          iccid
+        }
+      };
+    }
+
+    function sendToBot() {
+      const result = validateAndBuildPayload();
+      if (result.error) {
+        setStatus(formStatus, result.error, true);
+        return;
+      }
+
+      if (!tg || typeof tg.sendData !== "function") {
+        setStatus(formStatus, "Telegram WebApp API недоступне.", true);
+        return;
+      }
+
+      setStatus(formStatus, "Відправляю дані в бот...");
+      tg.sendData(JSON.stringify(result.payload));
+      tg.close();
+    }
+
+    numberSuffixInput.addEventListener("input", () => {
+      numberSuffixInput.value = onlyDigits(numberSuffixInput.value);
+    });
+
+    imeiInput.addEventListener("input", () => {
+      imeiInput.value = onlyDigits(imeiInput.value);
+    });
+
+    simInput.addEventListener("input", () => {
+      simInput.value = onlyDigits(simInput.value);
+    });
+
+    iccidInput.addEventListener("input", () => {
+      iccidInput.value = onlyDigits(iccidInput.value);
+    });
+
+    scanBtn.addEventListener("click", scanQr);
+    rescanBtn.addEventListener("click", scanQr);
+    sendBtn.addEventListener("click", sendToBot);
+
+    populateModels();
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    setTimeout(scanQr, 250);
+  </script>
+</body>
+</html>
