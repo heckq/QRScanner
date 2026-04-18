@@ -96,6 +96,49 @@
       line-height: 1.35;
     }
 
+    .view-mode-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface-soft);
+      padding: 9px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .view-mode-title {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #355572;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .view-mode-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .view-mode-btn {
+      border: 1px solid #cfddea;
+      background: #ffffff;
+      color: #244563;
+      border-radius: 8px;
+      padding: 7px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .view-mode-btn.active {
+      border-color: #6ecfc8;
+      background: #e9fffa;
+      color: #16564e;
+      box-shadow: 0 6px 14px rgba(14, 165, 166, 0.12);
+    }
+
     .section-label {
       margin: 0;
       font-size: 12px;
@@ -411,6 +454,13 @@
       transition: background-color 0.12s ease;
     }
 
+    td input.formula-cell {
+      font-weight: 700;
+      text-align: center;
+      color: #253b52;
+      cursor: default;
+    }
+
     td input:focus {
       background: #e9fffa;
       box-shadow: inset 0 0 0 2px #7fd8cc;
@@ -564,6 +614,40 @@
       }
     }
 
+    body.force-desktop {
+      overflow-x: auto;
+    }
+
+    body.force-desktop .app {
+      grid-template-columns: 310px minmax(0, 1fr) !important;
+      min-width: 1180px;
+    }
+
+    body.force-desktop .sidebar {
+      position: sticky !important;
+      max-height: calc(100vh - 28px) !important;
+    }
+
+    body.force-mobile .app {
+      grid-template-columns: 1fr !important;
+      min-width: 0;
+    }
+
+    body.force-mobile .sidebar {
+      position: static !important;
+      max-height: none !important;
+    }
+
+    body.force-mobile .book-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 680px) {
+      body.force-mobile .book-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @keyframes app-in {
       from {
         opacity: 0;
@@ -613,6 +697,15 @@
       <section class="brand">
         <h1>Графіки</h1>
         <p>Листи по містах, аркуші по місяцях і таблиці 30x60.</p>
+      </section>
+
+      <section class="view-mode-card">
+        <p class="view-mode-title">Вигляд</p>
+        <div class="view-mode-buttons">
+          <button id="viewAutoBtn" class="view-mode-btn" type="button">Авто</button>
+          <button id="viewDesktopBtn" class="view-mode-btn" type="button">Ноут</button>
+          <button id="viewMobileBtn" class="view-mode-btn" type="button">Телефон</button>
+        </div>
       </section>
 
       <section class="menu-wrap">
@@ -682,10 +775,60 @@
 
       const STORAGE_KEY = "vevi_charts_books_v2";
       const LEGACY_STORAGE_KEY = "vevi_charts_sheets_v1";
+      const VIEW_MODE_STORAGE_KEY = "vevi_charts_view_mode_v1";
       const CHARTS_API_URL = resolveApiUrl();
       const SYNC_INTERVAL_MS = 4000;
       const SHEET_ROWS = 30;
       const SHEET_COLS = 60;
+      const EXCEL_EPOCH_UTC_MS = Date.UTC(1899, 11, 30);
+
+      const VIEW_MODE_AUTO = "auto";
+      const VIEW_MODE_DESKTOP = "desktop";
+      const VIEW_MODE_MOBILE = "mobile";
+
+      const BLOCK_TOP = "top";
+      const BLOCK_BOTTOM = "bottom";
+
+      const SECTION_ROW_STYLES = {
+        1: "#93C47D",
+        2: "#FFFF00",
+        3: "#FFFF00",
+        4: "#C9DAF8",
+        5: "#D5A6BD",
+        6: "#B6D7A8",
+        7: "#FFE599",
+        8: "#EA9999",
+        9: "#A4C2F4",
+        10: "#B4A7D6",
+        11: "#FCE5CD",
+        12: "#CCCCCC",
+        13: "#FFF2CC",
+        14: "#D5A6BD",
+        15: "#A4C2F4",
+        17: "#93C47D",
+        18: "#FFFF00",
+        19: "#FFFF00",
+        20: "#EAD1DC",
+        21: "#EA9999",
+        22: "#F4CCCC",
+        23: "#FCE5CD",
+        24: "#B6D7A8"
+      };
+
+      const SUMMARY_BG_FIRST_HALF = "#F3F3F3";
+      const SUMMARY_BG_SECOND_HALF = "#D9D9D9";
+
+      const TOP_SECTION_FORMULA_ROWS = {
+        tech: { start: 5, end: 12 },
+        scouts: { start: 14, end: 15 },
+        service: { start: 21, end: 24 }
+      };
+
+      const BOTTOM_SECTION_FORMULA_ROWS = {
+        tech: { start: 5, end: 10 },
+        scouts: { start: 13, end: 13 },
+        service: { start: 16, end: 16 }
+      };
 
       const WEEKDAY_LABELS = ["нд", "пн", "вт", "ср", "чт", "пт", "сб"];
       const MONTH_VARIANTS = [
@@ -754,6 +897,10 @@
       const deleteBookAction = document.getElementById("deleteBookAction");
       const deleteSheetAction = document.getElementById("deleteSheetAction");
 
+      const viewAutoBtn = document.getElementById("viewAutoBtn");
+      const viewDesktopBtn = document.getElementById("viewDesktopBtn");
+      const viewMobileBtn = document.getElementById("viewMobileBtn");
+
       const nameModalBackdrop = document.getElementById("nameModalBackdrop");
       const nameModalTitle = document.getElementById("nameModalTitle");
       const nameModalDescription = document.getElementById("nameModalDescription");
@@ -769,6 +916,7 @@
       let isServerSaving = false;
       let hasPendingServerSave = false;
       let serverRevision = 0;
+      let deviceViewMode = VIEW_MODE_AUTO;
 
       function resolveApiUrl() {
         const query = new URLSearchParams(window.location.search);
@@ -873,6 +1021,279 @@
         return { monthIndex, monthLabel, year };
       }
 
+      function toCellKey(row, col) {
+        return String(row - 1) + ":" + String(col - 1);
+      }
+
+      function getCellValue(sheet, row, col) {
+        if (!sheet || !sheet.cells) {
+          return "";
+        }
+
+        const key = toCellKey(row, col);
+        if (!Object.prototype.hasOwnProperty.call(sheet.cells, key)) {
+          return "";
+        }
+
+        return String(sheet.cells[key]);
+      }
+
+      function setCellValue(sheet, row, col, value) {
+        if (!sheet || !sheet.cells) {
+          return;
+        }
+
+        const key = toCellKey(row, col);
+        if (value === undefined || value === null || value === "") {
+          delete sheet.cells[key];
+          return;
+        }
+
+        sheet.cells[key] = String(value);
+      }
+
+      function normalizeShiftToken(value) {
+        return String(value || "")
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "");
+      }
+
+      function countTokensInRange(sheet, row, startCol, endCol, acceptedTokens) {
+        if (endCol < startCol) {
+          return 0;
+        }
+
+        const accepted = acceptedTokens.map((token) => normalizeShiftToken(token));
+        let total = 0;
+
+        for (let col = startCol; col <= endCol; col += 1) {
+          const normalized = normalizeShiftToken(getCellValue(sheet, row, col));
+          if (accepted.includes(normalized)) {
+            total += 1;
+          }
+        }
+
+        return total;
+      }
+
+      function registerFormulaCell(sheet, row, col) {
+        if (!sheet) {
+          return;
+        }
+
+        if (!sheet.formulaCells || typeof sheet.formulaCells !== "object") {
+          sheet.formulaCells = {};
+        }
+
+        sheet.formulaCells[toCellKey(row, col)] = true;
+      }
+
+      function pad2(value) {
+        const number = Number(value);
+        return number < 10 ? "0" + String(number) : String(number);
+      }
+
+      function excelSerialToDateText(raw) {
+        const num = Number(raw);
+        if (!Number.isFinite(num)) {
+          return null;
+        }
+
+        if (num < 20000 || num > 70000) {
+          return null;
+        }
+
+        const utcMs = EXCEL_EPOCH_UTC_MS + Math.round(num) * 86400000;
+        const date = new Date(utcMs);
+        if (Number.isNaN(date.getTime())) {
+          return null;
+        }
+
+        return pad2(date.getUTCDate()) + "." + pad2(date.getUTCMonth() + 1);
+      }
+
+      function normalizeDateCellByKey(key, value) {
+        if (value === undefined || value === null || value === "") {
+          return value;
+        }
+
+        const rowMatch = /^(\d+):\d+$/.exec(String(key));
+        if (!rowMatch) {
+          return value;
+        }
+
+        const rowIndex = Number(rowMatch[1]);
+        if (rowIndex !== 2 && rowIndex !== 18) {
+          return value;
+        }
+
+        const converted = excelSerialToDateText(value);
+        return converted || value;
+      }
+
+      function convertImportedDateRefValue(ref, value) {
+        if (value === undefined || value === null || value === "") {
+          return value;
+        }
+
+        const parsed = parseRef(ref);
+        if (!parsed) {
+          return value;
+        }
+
+        if (parsed.row !== 3 && parsed.row !== 19) {
+          return value;
+        }
+
+        const converted = excelSerialToDateText(value);
+        return converted || value;
+      }
+
+      function formatTemplateDate(day, monthIndex, year) {
+        if (monthIndex === null) {
+          return String(day);
+        }
+
+        const date = new Date(Date.UTC(year, monthIndex, day));
+        return pad2(date.getUTCDate()) + "." + pad2(date.getUTCMonth() + 1);
+      }
+
+      function getSheetDayCount(sheet) {
+        if (!sheet) {
+          return 30;
+        }
+
+        const monthInfo = parseMonthInfo(sheet.name);
+        if (monthInfo.monthIndex === null) {
+          return 30;
+        }
+
+        return new Date(monthInfo.year, monthInfo.monthIndex + 1, 0).getDate();
+      }
+
+      function getSummaryStartCol(sheet) {
+        const dayCount = getSheetDayCount(sheet);
+        return 2 + dayCount;
+      }
+
+      function recalculateSheetFormulas(sheet) {
+        if (!sheet || !sheet.cells) {
+          return;
+        }
+
+        sheet.formulaCells = {};
+
+        const summaryStartCol = getSummaryStartCol(sheet);
+        const dayStartCol = 2;
+        const dayEndCol = summaryStartCol - 1;
+        const firstHalfEndCol = Math.min(dayEndCol, 16);
+        const secondHalfStartCol = 17;
+
+        const recalcTechRow = (row) => {
+          const dayTotal = countTokensInRange(sheet, row, dayStartCol, dayEndCol, ["д"]);
+          const nightTotal = countTokensInRange(sheet, row, dayStartCol, dayEndCol, ["н"]);
+          const dayFirst = countTokensInRange(sheet, row, dayStartCol, firstHalfEndCol, ["д"]);
+          const nightFirst = countTokensInRange(sheet, row, dayStartCol, firstHalfEndCol, ["н"]);
+          const daySecond = countTokensInRange(sheet, row, secondHalfStartCol, dayEndCol, ["д"]);
+          const nightSecond = countTokensInRange(sheet, row, secondHalfStartCol, dayEndCol, ["н"]);
+
+          setCellValue(sheet, row, summaryStartCol + 0, String(dayTotal));
+          setCellValue(sheet, row, summaryStartCol + 1, String(nightTotal));
+          setCellValue(sheet, row, summaryStartCol + 2, String(dayTotal + nightTotal));
+          setCellValue(sheet, row, summaryStartCol + 3, String(dayFirst));
+          setCellValue(sheet, row, summaryStartCol + 4, String(nightFirst));
+          setCellValue(sheet, row, summaryStartCol + 5, String(daySecond));
+          setCellValue(sheet, row, summaryStartCol + 6, String(nightSecond));
+
+          for (let i = 0; i <= 6; i += 1) {
+            registerFormulaCell(sheet, row, summaryStartCol + i);
+          }
+        };
+
+        const recalcScoutRow = (row) => {
+          const scoutMainTotal = countTokensInRange(sheet, row, dayStartCol, dayEndCol, ["с", "д"]);
+          const scoutSubTotal = countTokensInRange(sheet, row, dayStartCol, dayEndCol, ["с1", "с2"]);
+          const scoutMainFirst = countTokensInRange(sheet, row, dayStartCol, firstHalfEndCol, ["с", "д"]);
+          const scoutSubFirst = countTokensInRange(sheet, row, dayStartCol, firstHalfEndCol, ["с1", "с2"]);
+          const scoutMainSecond = countTokensInRange(sheet, row, secondHalfStartCol, dayEndCol, ["с", "д"]);
+          const scoutSubSecond = countTokensInRange(sheet, row, secondHalfStartCol, dayEndCol, ["с1", "с2"]);
+
+          setCellValue(sheet, row, summaryStartCol + 0, String(scoutMainTotal));
+          setCellValue(sheet, row, summaryStartCol + 1, String(scoutSubTotal));
+          setCellValue(sheet, row, summaryStartCol + 2, String(scoutMainTotal + scoutSubTotal));
+          setCellValue(sheet, row, summaryStartCol + 3, String(scoutMainFirst));
+          setCellValue(sheet, row, summaryStartCol + 4, String(scoutSubFirst));
+          setCellValue(sheet, row, summaryStartCol + 5, String(scoutMainSecond));
+          setCellValue(sheet, row, summaryStartCol + 6, String(scoutSubSecond));
+
+          for (let i = 0; i <= 6; i += 1) {
+            registerFormulaCell(sheet, row, summaryStartCol + i);
+          }
+        };
+
+        const recalcServiceRow = (row) => {
+          const serviceTotal = countTokensInRange(sheet, row, dayStartCol, dayEndCol, ["д"]);
+          const serviceFirst = countTokensInRange(sheet, row, dayStartCol, firstHalfEndCol, ["д"]);
+          const serviceSecond = countTokensInRange(sheet, row, secondHalfStartCol, dayEndCol, ["д"]);
+
+          setCellValue(sheet, row, summaryStartCol + 0, String(serviceTotal));
+          setCellValue(sheet, row, summaryStartCol + 1, String(serviceFirst));
+          setCellValue(sheet, row, summaryStartCol + 2, String(serviceSecond));
+
+          for (let i = 0; i <= 2; i += 1) {
+            registerFormulaCell(sheet, row, summaryStartCol + i);
+          }
+        };
+
+        for (let row = TOP_SECTION_FORMULA_ROWS.tech.start; row <= TOP_SECTION_FORMULA_ROWS.tech.end; row += 1) {
+          recalcTechRow(row);
+        }
+
+        for (let row = TOP_SECTION_FORMULA_ROWS.scouts.start; row <= TOP_SECTION_FORMULA_ROWS.scouts.end; row += 1) {
+          recalcScoutRow(row);
+        }
+
+        for (let row = TOP_SECTION_FORMULA_ROWS.service.start; row <= TOP_SECTION_FORMULA_ROWS.service.end; row += 1) {
+          recalcServiceRow(row);
+        }
+
+        const monthTitle = getCellValue(sheet, 1, 2);
+        if (monthTitle) {
+          setCellValue(sheet, 17, 2, monthTitle);
+          registerFormulaCell(sheet, 17, 2);
+        }
+
+        const weekdayTitle = getCellValue(sheet, 2, 3);
+        if (weekdayTitle) {
+          setCellValue(sheet, 18, 3, weekdayTitle);
+          registerFormulaCell(sheet, 18, 3);
+        }
+
+        const dateTitle = getCellValue(sheet, 3, 3);
+        if (dateTitle) {
+          setCellValue(sheet, 19, 3, dateTitle);
+          registerFormulaCell(sheet, 19, 3);
+        }
+      }
+
+      function applyDerivedData(sheet) {
+        if (!sheet || !sheet.cells) {
+          return;
+        }
+
+        const entries = Object.entries(sheet.cells);
+        for (let i = 0; i < entries.length; i += 1) {
+          const [key, value] = entries[i];
+          const normalized = normalizeDateCellByKey(key, value);
+          if (normalized !== value) {
+            sheet.cells[key] = String(normalized);
+          }
+        }
+
+        recalculateSheetFormulas(sheet);
+      }
+
       function placeSummaryLabels(cells, row, summaryStartCol, labels) {
         for (let i = 0; i < labels.length; i += 1) {
           if (!labels[i]) {
@@ -918,8 +1339,9 @@
 
           setCellByRef(cells, toRef(2, col), weekday);
           setCellByRef(cells, toRef(18, col), weekday);
-          setCellByRef(cells, toRef(3, col), String(day));
-          setCellByRef(cells, toRef(19, col), String(day));
+          const dateText = formatTemplateDate(day, monthInfo.monthIndex, monthInfo.year);
+          setCellByRef(cells, toRef(3, col), dateText);
+          setCellByRef(cells, toRef(19, col), dateText);
         }
 
         const summaryStartCol = dayStartCol + dayCount;
@@ -940,21 +1362,26 @@
         const entries = Object.entries(refs);
         for (let i = 0; i < entries.length; i += 1) {
           const entry = entries[i];
-          setCellByRef(cells, entry[0], entry[1]);
+          const normalized = convertImportedDateRefValue(entry[0], entry[1]);
+          setCellByRef(cells, entry[0], normalized);
         }
         return cells;
       }
 
       function createSheet(name, cells) {
-        return {
+        const sheet = {
           id: makeId("sheet"),
           name: String(name || "Аркуш").trim() || "Аркуш",
           rows: SHEET_ROWS,
           cols: SHEET_COLS,
           cells: cells ? { ...cells } : buildMonthlyTemplateCells(name),
+          formulaCells: {},
           createdAt: nowIso(),
           updatedAt: nowIso()
         };
+
+        applyDerivedData(sheet);
+        return sheet;
       }
 
       function createBook(name, firstSheetName, firstSheetCells) {
@@ -999,7 +1426,7 @@
           if (value === undefined || value === null || value === "") {
             continue;
           }
-          output[key] = String(value);
+          output[key] = String(normalizeDateCellByKey(key, value));
         }
         return output;
       }
@@ -1012,15 +1439,22 @@
         const name = String(rawSheet.name || DEFAULT_MONTH_NAME).trim() || DEFAULT_MONTH_NAME;
         const normalizedCells = normalizeCells(rawSheet.cells);
 
-        return {
+        const normalizedSheet = {
           id: typeof rawSheet.id === "string" && rawSheet.id ? rawSheet.id : makeId("sheet"),
           name,
           rows: SHEET_ROWS,
           cols: SHEET_COLS,
           cells: normalizedCells,
+          formulaCells:
+            rawSheet.formulaCells && typeof rawSheet.formulaCells === "object"
+              ? { ...rawSheet.formulaCells }
+              : {},
           createdAt: typeof rawSheet.createdAt === "string" ? rawSheet.createdAt : nowIso(),
           updatedAt: typeof rawSheet.updatedAt === "string" ? rawSheet.updatedAt : nowIso()
         };
+
+        applyDerivedData(normalizedSheet);
+        return normalizedSheet;
       }
 
       function normalizeBook(rawBook) {
@@ -1335,6 +1769,120 @@
         }, 220);
       }
 
+      function isLikelyMobilePlatform() {
+        const platform = String((tg && tg.platform) || "").toLowerCase();
+        return platform === "android" || platform === "ios" || platform === "iphone" || platform === "ipad";
+      }
+
+      function readInitialViewMode() {
+        const query = new URLSearchParams(window.location.search);
+        const queryMode = String(query.get("view") || "").trim().toLowerCase();
+        if (queryMode === VIEW_MODE_AUTO || queryMode === VIEW_MODE_DESKTOP || queryMode === VIEW_MODE_MOBILE) {
+          return queryMode;
+        }
+
+        const stored = String(localStorage.getItem(VIEW_MODE_STORAGE_KEY) || "").trim().toLowerCase();
+        if (stored === VIEW_MODE_AUTO || stored === VIEW_MODE_DESKTOP || stored === VIEW_MODE_MOBILE) {
+          return stored;
+        }
+
+        return VIEW_MODE_AUTO;
+      }
+
+      function computeEffectiveViewMode() {
+        if (deviceViewMode === VIEW_MODE_DESKTOP || deviceViewMode === VIEW_MODE_MOBILE) {
+          return deviceViewMode;
+        }
+
+        if (isLikelyMobilePlatform()) {
+          return VIEW_MODE_MOBILE;
+        }
+
+        return VIEW_MODE_DESKTOP;
+      }
+
+      function updateViewModeButtons() {
+        const effective = computeEffectiveViewMode();
+        viewAutoBtn.classList.toggle("active", deviceViewMode === VIEW_MODE_AUTO);
+        viewDesktopBtn.classList.toggle("active", effective === VIEW_MODE_DESKTOP);
+        viewMobileBtn.classList.toggle("active", effective === VIEW_MODE_MOBILE);
+      }
+
+      function applyViewMode() {
+        const effective = computeEffectiveViewMode();
+        document.body.classList.remove("force-desktop", "force-mobile");
+
+        if (effective === VIEW_MODE_DESKTOP) {
+          document.body.classList.add("force-desktop");
+        } else {
+          document.body.classList.add("force-mobile");
+        }
+
+        updateViewModeButtons();
+      }
+
+      function setViewMode(mode) {
+        deviceViewMode = mode;
+        localStorage.setItem(VIEW_MODE_STORAGE_KEY, deviceViewMode);
+        applyViewMode();
+      }
+
+      function isFormulaCell(sheet, row, col) {
+        if (!sheet || !sheet.formulaCells || typeof sheet.formulaCells !== "object") {
+          return false;
+        }
+        return Boolean(sheet.formulaCells[toCellKey(row, col)]);
+      }
+
+      function getCellBackgroundColor(sheet, row, col) {
+        const base = SECTION_ROW_STYLES[row] || null;
+        if (!sheet) {
+          return base;
+        }
+
+        const summaryStartCol = getSummaryStartCol(sheet);
+        const summaryOffset = col - summaryStartCol;
+
+        if (summaryOffset >= 0 && summaryOffset <= 6) {
+          const isServiceRow = row >= TOP_SECTION_FORMULA_ROWS.service.start && row <= TOP_SECTION_FORMULA_ROWS.service.end;
+          if (isServiceRow) {
+            if (summaryOffset === 1) {
+              return SUMMARY_BG_FIRST_HALF;
+            }
+            if (summaryOffset === 2) {
+              return SUMMARY_BG_SECOND_HALF;
+            }
+            return base;
+          }
+
+          if (summaryOffset === 3 || summaryOffset === 4) {
+            return SUMMARY_BG_FIRST_HALF;
+          }
+          if (summaryOffset === 5 || summaryOffset === 6) {
+            return SUMMARY_BG_SECOND_HALF;
+          }
+          return base;
+        }
+
+        return base;
+      }
+
+      function applyCellPresentation(input, rowIndex, colIndex, sheet) {
+        const row = rowIndex + 1;
+        const col = colIndex + 1;
+        const td = input.parentElement;
+        if (!(td instanceof HTMLTableCellElement)) {
+          return;
+        }
+
+        const bg = getCellBackgroundColor(sheet, row, col);
+        td.style.backgroundColor = bg || "";
+
+        const formula = isFormulaCell(sheet, row, col);
+        input.classList.toggle("formula-cell", formula);
+        input.readOnly = formula;
+      }
+
       function activeBook() {
         return state.books.find((book) => book.id === state.activeBookId) || null;
       }
@@ -1464,6 +2012,14 @@
           const input = inputs[i];
           const r = input.getAttribute("data-r");
           const c = input.getAttribute("data-c");
+          if (r === null || c === null) {
+            continue;
+          }
+
+          const rowIndex = Number(r);
+          const colIndex = Number(c);
+          applyCellPresentation(input, rowIndex, colIndex, sheet);
+
           const key = String(r) + ":" + String(c);
           input.value = Object.prototype.hasOwnProperty.call(sheet.cells, key)
             ? String(sheet.cells[key])
@@ -1686,6 +2242,12 @@
           return;
         }
 
+        const row = Number(r) + 1;
+        const col = Number(c) + 1;
+        if (isFormulaCell(sheet, row, col)) {
+          return;
+        }
+
         const key = String(r) + ":" + String(c);
         const value = target.value;
 
@@ -1695,7 +2257,9 @@
           sheet.cells[key] = value;
         }
 
+        applyDerivedData(sheet);
         sheet.updatedAt = nowIso();
+        renderGridValues();
         persistStateDebounced();
       });
 
@@ -1759,6 +2323,27 @@
           closeNameModal();
         }
       });
+
+      viewAutoBtn.addEventListener("click", () => {
+        setViewMode(VIEW_MODE_AUTO);
+      });
+
+      viewDesktopBtn.addEventListener("click", () => {
+        setViewMode(VIEW_MODE_DESKTOP);
+      });
+
+      viewMobileBtn.addEventListener("click", () => {
+        setViewMode(VIEW_MODE_MOBILE);
+      });
+
+      window.addEventListener("resize", () => {
+        if (deviceViewMode === VIEW_MODE_AUTO) {
+          applyViewMode();
+        }
+      });
+
+      deviceViewMode = readInitialViewMode();
+      applyViewMode();
 
       buildGridSkeleton();
       renderAll();
