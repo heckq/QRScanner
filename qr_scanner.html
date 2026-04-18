@@ -436,9 +436,44 @@
 
     populateModels();
 
-    if (tg) {
+    function requestFullscreenIfSupported() {
+      if (!tg || typeof tg.requestFullscreen !== "function") {
+        return;
+      }
+
+      try {
+        tg.requestFullscreen();
+      } catch {
+        // Telegram Desktop can reject fullscreen in some contexts.
+      }
+    }
+
+    function expandTelegramWindow() {
+      if (!tg) {
+        return;
+      }
+
       tg.ready();
       tg.expand();
+      requestFullscreenIfSupported();
+
+      setTimeout(() => {
+        tg.expand();
+        requestFullscreenIfSupported();
+      }, 260);
+    }
+
+    if (tg) {
+      expandTelegramWindow();
+
+      if (typeof tg.onEvent === "function") {
+        tg.onEvent("viewportChanged", () => {
+          if (typeof tg.isExpanded === "boolean" && !tg.isExpanded) {
+            tg.expand();
+            requestFullscreenIfSupported();
+          }
+        });
+      }
     } else {
       setStatus(scanStatus, "Відкрийте цю сторінку саме через кнопку бота в Telegram.", true);
     }

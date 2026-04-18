@@ -573,6 +573,292 @@
       min-height: 18px;
     }
 
+    .book-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 38px;
+      gap: 6px;
+      align-items: stretch;
+    }
+
+    .book-settings-btn {
+      border: 1px solid #d7e3ee;
+      background: #fff;
+      border-radius: 11px;
+      font-size: 18px;
+      cursor: pointer;
+      color: #2f506b;
+    }
+
+    .book-settings-btn:hover {
+      background: #eef5fb;
+      border-color: #b6cadb;
+    }
+
+    .toolbar-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+      padding: 10px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .hint-chip {
+      border: 1px solid #d6e4ef;
+      background: #f7fbff;
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 12px;
+      color: #305472;
+      font-weight: 600;
+    }
+
+    .tool-btn {
+      border: 1px solid #c7d8e7;
+      background: #fff;
+      color: #264663;
+      border-radius: 9px;
+      padding: 8px 11px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tool-btn:hover {
+      background: #f0f7fc;
+      border-color: #b4cadd;
+    }
+
+    .tool-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .cell-selected {
+      box-shadow: inset 0 0 0 2px #0ea5a6;
+    }
+
+    .cell-has-bonus {
+      box-shadow: inset 0 -3px 0 #f59f00;
+    }
+
+    .salary-board {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+      padding: 10px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .salary-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .salary-head h3 {
+      margin: 0;
+      font-family: "Rubik", "IBM Plex Sans", sans-serif;
+      font-size: 18px;
+      color: #163852;
+    }
+
+    .salary-head p {
+      margin: 0;
+      color: #516a81;
+      font-size: 12px;
+    }
+
+    .salary-panels {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .salary-card {
+      border: 1px solid #d7e3ee;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      min-height: 280px;
+    }
+
+    .salary-card.first {
+      background: linear-gradient(180deg, #f9fdff, #ffffff);
+    }
+
+    .salary-card.second {
+      background: linear-gradient(180deg, #fffaf4, #ffffff);
+    }
+
+    .salary-card-header {
+      border-bottom: 1px solid #deebf4;
+      padding: 9px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .salary-card-header h4 {
+      margin: 0;
+      font-size: 14px;
+      color: #1f4460;
+      font-family: "Rubik", "IBM Plex Sans", sans-serif;
+    }
+
+    .salary-table-wrap {
+      overflow: auto;
+      max-height: 340px;
+      background: #fff;
+    }
+
+    .salary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 760px;
+    }
+
+    .salary-table th,
+    .salary-table td {
+      border: 1px solid #e1ebf3;
+      padding: 6px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .salary-table th {
+      background: #f1f7fb;
+      color: #284b67;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .salary-table .dept-row td {
+      background: #f8fbfe;
+      color: #2e5574;
+      font-weight: 700;
+    }
+
+    .salary-table td.number {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .salary-total {
+      border-top: 1px solid #deebf4;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1f4460;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .modal.modal-wide {
+      width: min(860px, 100%);
+      max-height: min(86vh, 900px);
+      overflow: auto;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .departments-list {
+      display: grid;
+      gap: 10px;
+      max-height: 44vh;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .department-card {
+      border: 1px solid #dce8f2;
+      border-radius: 10px;
+      background: #f9fcff;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .department-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .department-head input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #cfe0ee;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .department-head input:focus {
+      border-color: #7dd6c8;
+      box-shadow: 0 0 0 3px rgba(14, 165, 166, 0.16);
+    }
+
+    .department-delete {
+      border: 1px solid #efcbcb;
+      background: #fff5f5;
+      color: #9e2f2f;
+      border-radius: 8px;
+      padding: 7px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .department-delete:hover {
+      background: #ffecec;
+    }
+
+    .department-employees {
+      border: 1px solid #cfe0ee;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 13px;
+      min-height: 84px;
+      resize: vertical;
+      outline: none;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+    }
+
+    .department-employees:focus {
+      border-color: #7dd6c8;
+      box-shadow: 0 0 0 3px rgba(14, 165, 166, 0.16);
+    }
+
+    .hint-text {
+      margin: 0;
+      font-size: 12px;
+      color: #526a82;
+      line-height: 1.35;
+    }
+
     @media (max-width: 980px) {
       .app {
         grid-template-columns: 1fr;
@@ -589,6 +875,14 @@
 
       .grid-wrap {
         max-height: calc(100vh - 360px);
+      }
+
+      .salary-panels {
+        grid-template-columns: 1fr;
+      }
+
+      .settings-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -620,7 +914,7 @@
 
     body.force-desktop .app {
       grid-template-columns: 310px minmax(0, 1fr) !important;
-      min-width: 1180px;
+      min-width: min(1180px, calc(100vw - 28px));
     }
 
     body.force-desktop .sidebar {
@@ -713,6 +1007,8 @@
         <div id="menuPanel" class="menu-panel hidden">
           <button id="addBookAction" class="menu-item" type="button">+ Додати новий лист</button>
           <button id="addSheetAction" class="menu-item" type="button">+ Додати новий аркуш</button>
+          <button id="bookSettingsAction" class="menu-item" type="button">⚙ Налаштування активного листа</button>
+          <button id="pasteTableAction" class="menu-item" type="button">Вставити таблицю (Ctrl+V)</button>
           <button id="deleteBookAction" class="menu-item danger" type="button">Видалити активний лист</button>
           <button id="deleteSheetAction" class="menu-item danger" type="button">Видалити активний аркуш</button>
         </div>
@@ -738,6 +1034,13 @@
         <div id="sheetTabs" class="sheet-tabs"></div>
       </section>
 
+      <section class="toolbar-card">
+        <span id="selectedCellLabel" class="hint-chip">Клітинка: не вибрано</span>
+        <button id="cellBonusBtn" class="tool-btn" type="button" disabled>Бонус для клітинки</button>
+        <button id="bookSettingsBtn" class="tool-btn" type="button">Налаштування листа</button>
+        <span class="hint-chip">Порада: вставляй дані з Excel через Ctrl+V (блоком)</span>
+      </section>
+
       <section class="grid-card">
         <div id="gridWrap" class="grid-wrap">
           <table id="gridTable" aria-label="Таблиця аркуша">
@@ -747,6 +1050,66 @@
             <tbody id="gridBody"></tbody>
           </table>
           <div id="emptyNote" class="empty-note" hidden>Немає доступного аркуша. Додайте аркуш через меню.</div>
+        </div>
+      </section>
+
+      <section class="salary-board">
+        <div class="salary-head">
+          <h3>Зарплатний Блок</h3>
+          <p>Окремо для 1-15 та 16-кінця місяця. Рахує зміни, години, бонуси та аванси.</p>
+        </div>
+        <div class="salary-panels">
+          <article class="salary-card first">
+            <header class="salary-card-header">
+              <h4 id="salaryFirstTitle">1-15</h4>
+              <button id="salaryExportFirstBtn" class="tool-btn" type="button">Експорт у чат</button>
+            </header>
+            <div class="salary-table-wrap">
+              <table class="salary-table" aria-label="Зарплата за 1-15">
+                <thead>
+                  <tr>
+                    <th>Департамент</th>
+                    <th>Працівник</th>
+                    <th>Д</th>
+                    <th>Н</th>
+                    <th>Год</th>
+                    <th>База</th>
+                    <th>Премія</th>
+                    <th>Аванс</th>
+                    <th>Разом</th>
+                  </tr>
+                </thead>
+                <tbody id="salaryFirstBody"></tbody>
+              </table>
+            </div>
+            <div id="salaryFirstTotal" class="salary-total">-</div>
+          </article>
+
+          <article class="salary-card second">
+            <header class="salary-card-header">
+              <h4 id="salarySecondTitle">16-кінець</h4>
+              <button id="salaryExportSecondBtn" class="tool-btn" type="button">Експорт у чат</button>
+            </header>
+            <div class="salary-table-wrap">
+              <table class="salary-table" aria-label="Зарплата за 16-кінець">
+                <thead>
+                  <tr>
+                    <th>Департамент</th>
+                    <th>Працівник</th>
+                    <th>Д</th>
+                    <th>Н</th>
+                    <th>Год</th>
+                    <th>База</th>
+                    <th>Премія</th>
+                    <th>Аванс</th>
+                    <th>Разом</th>
+                  </tr>
+                </thead>
+                <tbody id="salarySecondBody"></tbody>
+              </table>
+            </div>
+            <div id="salarySecondTotal" class="salary-total">-</div>
+          </article>
         </div>
       </section>
     </section>
@@ -768,6 +1131,61 @@
     </div>
   </div>
 
+  <div id="bonusModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bonusModalTitle">
+      <h3 id="bonusModalTitle">Бонуси Для Клітинки</h3>
+      <p id="bonusModalDescription">Налаштування застосовуються до вибраної клітинки у розрахунку ЗП.</p>
+      <div class="field">
+        <label for="bonusMultiplierInput">Множник зміни (x)</label>
+        <input id="bonusMultiplierInput" type="number" inputmode="decimal" step="0.1" min="0" placeholder="1.0">
+      </div>
+      <div class="field">
+        <label for="bonusPremiumInput">Премія (+)</label>
+        <input id="bonusPremiumInput" type="number" inputmode="decimal" step="1" placeholder="1000">
+      </div>
+      <div class="field">
+        <label for="bonusAdvanceInput">Аванс (-)</label>
+        <input id="bonusAdvanceInput" type="number" inputmode="decimal" step="1" placeholder="1000">
+      </div>
+      <div id="bonusError" class="error"></div>
+      <div class="modal-actions">
+        <button id="clearBonusBtn" class="btn secondary" type="button">Очистити</button>
+        <button id="cancelBonusBtn" class="btn secondary" type="button">Скасувати</button>
+        <button id="saveBonusBtn" class="btn primary" type="button">Зберегти</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="bookSettingsModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="bookSettingsTitle">
+      <h3 id="bookSettingsTitle">Налаштування Листа</h3>
+      <p>Ставки і склад департаментів. Ці працівники автоматично підставляються у нові аркуші листа.</p>
+
+      <div class="settings-grid">
+        <div class="field">
+          <label for="dayRateInput">Оплата за денну зміну</label>
+          <input id="dayRateInput" type="number" inputmode="decimal" min="0" step="1" placeholder="1600">
+        </div>
+        <div class="field">
+          <label for="nightRateInput">Оплата за нічну зміну</label>
+          <input id="nightRateInput" type="number" inputmode="decimal" min="0" step="1" placeholder="1600">
+        </div>
+      </div>
+
+      <p class="hint-text">Департаменти і працівники (кожне ім'я з нового рядка):</p>
+      <div id="departmentsList" class="departments-list"></div>
+
+      <div class="modal-actions" style="justify-content: space-between;">
+        <button id="addDepartmentBtn" class="btn secondary" type="button">+ Додати департамент</button>
+        <div style="display:flex; gap:8px;">
+          <button id="cancelBookSettingsBtn" class="btn secondary" type="button">Скасувати</button>
+          <button id="saveBookSettingsBtn" class="btn primary" type="button">Зберегти</button>
+        </div>
+      </div>
+      <div id="bookSettingsError" class="error"></div>
+    </div>
+  </div>
+
   <script src="./uzhhorod_2026_april_data.js"></script>
   <script>
     (function () {
@@ -777,6 +1195,8 @@
       const LEGACY_STORAGE_KEY = "vevi_charts_sheets_v1";
       const VIEW_MODE_STORAGE_KEY = "vevi_charts_view_mode_v1";
       const CHARTS_API_URL = resolveApiUrl();
+      const CHARTS_API_HOST = extractHost(CHARTS_API_URL);
+      const CHARTS_API_IS_GITHUB_PAGES = CHARTS_API_HOST.endsWith("github.io");
       const SYNC_INTERVAL_MS = 4000;
       const SHEET_ROWS = 30;
       const SHEET_COLS = 60;
@@ -785,6 +1205,9 @@
       const VIEW_MODE_AUTO = "auto";
       const VIEW_MODE_DESKTOP = "desktop";
       const VIEW_MODE_MOBILE = "mobile";
+      const CHARTS_EXPORT_PAYLOAD_TYPE = "charts_salary_export";
+      const DEFAULT_DAY_SHIFT_HOURS = 12;
+      const DEFAULT_NIGHT_SHIFT_HOURS = 12;
 
       const BLOCK_TOP = "top";
       const BLOCK_BOTTOM = "bottom";
@@ -879,6 +1302,20 @@
       const SERVICE_INFO_TEXT = getTemplateValue("B20", "Сервіс:\n08:00 -18:00");
 
       const DEFAULT_MONTH_NAME = getTemplateValue("B1", "Квітень");
+      const DEFAULT_BOOK_DEPARTMENTS = [
+        {
+          name: "Техніки",
+          employees: ["Рома", "Володимир", "Руслан", "Олег", "Владислав", "Андрій ХР"]
+        },
+        {
+          name: "Скаути",
+          employees: ["Петя", "Женя"]
+        },
+        {
+          name: "Сервіс",
+          employees: ["Саша", "Влад", "Марк", "Петро"]
+        }
+      ];
 
       const bookList = document.getElementById("bookList");
       const sheetTabs = document.getElementById("sheetTabs");
@@ -894,8 +1331,23 @@
       const menuPanel = document.getElementById("menuPanel");
       const addBookAction = document.getElementById("addBookAction");
       const addSheetAction = document.getElementById("addSheetAction");
+      const bookSettingsAction = document.getElementById("bookSettingsAction");
+      const pasteTableAction = document.getElementById("pasteTableAction");
       const deleteBookAction = document.getElementById("deleteBookAction");
       const deleteSheetAction = document.getElementById("deleteSheetAction");
+
+      const selectedCellLabel = document.getElementById("selectedCellLabel");
+      const cellBonusBtn = document.getElementById("cellBonusBtn");
+      const bookSettingsBtn = document.getElementById("bookSettingsBtn");
+
+      const salaryFirstTitle = document.getElementById("salaryFirstTitle");
+      const salarySecondTitle = document.getElementById("salarySecondTitle");
+      const salaryFirstBody = document.getElementById("salaryFirstBody");
+      const salarySecondBody = document.getElementById("salarySecondBody");
+      const salaryFirstTotal = document.getElementById("salaryFirstTotal");
+      const salarySecondTotal = document.getElementById("salarySecondTotal");
+      const salaryExportFirstBtn = document.getElementById("salaryExportFirstBtn");
+      const salaryExportSecondBtn = document.getElementById("salaryExportSecondBtn");
 
       const viewAutoBtn = document.getElementById("viewAutoBtn");
       const viewDesktopBtn = document.getElementById("viewDesktopBtn");
@@ -910,6 +1362,24 @@
       const cancelNameBtn = document.getElementById("cancelNameBtn");
       const createNameBtn = document.getElementById("createNameBtn");
 
+      const bonusModalBackdrop = document.getElementById("bonusModalBackdrop");
+      const bonusMultiplierInput = document.getElementById("bonusMultiplierInput");
+      const bonusPremiumInput = document.getElementById("bonusPremiumInput");
+      const bonusAdvanceInput = document.getElementById("bonusAdvanceInput");
+      const bonusError = document.getElementById("bonusError");
+      const clearBonusBtn = document.getElementById("clearBonusBtn");
+      const cancelBonusBtn = document.getElementById("cancelBonusBtn");
+      const saveBonusBtn = document.getElementById("saveBonusBtn");
+
+      const bookSettingsModalBackdrop = document.getElementById("bookSettingsModalBackdrop");
+      const dayRateInput = document.getElementById("dayRateInput");
+      const nightRateInput = document.getElementById("nightRateInput");
+      const departmentsList = document.getElementById("departmentsList");
+      const addDepartmentBtn = document.getElementById("addDepartmentBtn");
+      const cancelBookSettingsBtn = document.getElementById("cancelBookSettingsBtn");
+      const saveBookSettingsBtn = document.getElementById("saveBookSettingsBtn");
+      const bookSettingsError = document.getElementById("bookSettingsError");
+
       let modalMode = "book";
       let saveTimer = null;
       let syncTimer = null;
@@ -917,12 +1387,29 @@
       let hasPendingServerSave = false;
       let serverRevision = 0;
       let deviceViewMode = VIEW_MODE_AUTO;
+      let selectedCell = null;
+      let editingBookId = "";
 
       function resolveApiUrl() {
         const query = new URLSearchParams(window.location.search);
         const queryValue = query.get("api");
         const raw = String(queryValue || window.CHARTS_API_URL || "").trim();
         return raw || "/api/charts/state";
+      }
+
+      function extractHost(url) {
+        try {
+          return new URL(url, window.location.href).host.toLowerCase();
+        } catch {
+          return "";
+        }
+      }
+
+      function serverUnavailableStatus() {
+        if (CHARTS_API_IS_GITHUB_PAGES) {
+          return "Локально збережено. API не може бути на GitHub Pages.";
+        }
+        return "Локально збережено, сервер недоступний";
       }
 
       function getTemplateValue(ref, fallback) {
@@ -939,6 +1426,174 @@
 
       function makeId(prefix) {
         return prefix + "_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+      }
+
+      function parseNumber(raw, fallback = 0) {
+        const normalized = String(raw ?? "")
+          .trim()
+          .replace(",", ".");
+        if (!normalized) {
+          return fallback;
+        }
+
+        const parsed = Number(normalized);
+        return Number.isFinite(parsed) ? parsed : fallback;
+      }
+
+      function round2(value) {
+        return Math.round(parseNumber(value) * 100) / 100;
+      }
+
+      function formatMoney(value) {
+        return round2(value).toLocaleString("uk-UA", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function buildDefaultSettings() {
+        return {
+          rates: {
+            dayShift: 1600,
+            nightShift: 1600,
+            dayHours: DEFAULT_DAY_SHIFT_HOURS,
+            nightHours: DEFAULT_NIGHT_SHIFT_HOURS
+          },
+          departments: DEFAULT_BOOK_DEPARTMENTS.map((item) => ({
+            id: makeId("dept"),
+            name: item.name,
+            employees: item.employees.map((employeeName) => ({
+              id: makeId("emp"),
+              name: employeeName,
+              row: 0
+            }))
+          }))
+        };
+      }
+
+      function normalizeRates(rawRates) {
+        const defaults = buildDefaultSettings().rates;
+        const dayShift = Math.max(0, parseNumber(rawRates && rawRates.dayShift, defaults.dayShift));
+        const nightShift = Math.max(0, parseNumber(rawRates && rawRates.nightShift, defaults.nightShift));
+        const dayHours = Math.max(1, parseNumber(rawRates && rawRates.dayHours, defaults.dayHours));
+        const nightHours = Math.max(1, parseNumber(rawRates && rawRates.nightHours, defaults.nightHours));
+
+        return { dayShift, nightShift, dayHours, nightHours };
+      }
+
+      function normalizeBookSettings(rawSettings) {
+        const fallback = buildDefaultSettings();
+        const sourceDepartments =
+          rawSettings && Array.isArray(rawSettings.departments) && rawSettings.departments.length
+            ? rawSettings.departments
+            : fallback.departments;
+
+        let rowCursor = 5;
+        const normalizedDepartments = [];
+
+        for (let i = 0; i < sourceDepartments.length; i += 1) {
+          const rawDepartment = sourceDepartments[i];
+          const departmentName = String(rawDepartment && rawDepartment.name ? rawDepartment.name : "").trim();
+          if (!departmentName) {
+            continue;
+          }
+
+          const rawEmployees = Array.isArray(rawDepartment && rawDepartment.employees)
+            ? rawDepartment.employees
+            : [];
+
+          const employees = [];
+          for (let j = 0; j < rawEmployees.length; j += 1) {
+            if (rowCursor > SHEET_ROWS) {
+              break;
+            }
+
+            const rawEmployee = rawEmployees[j];
+            const employeeName = String(
+              typeof rawEmployee === "string" ? rawEmployee : rawEmployee && rawEmployee.name ? rawEmployee.name : ""
+            ).trim();
+            if (!employeeName) {
+              continue;
+            }
+
+            employees.push({
+              id:
+                typeof rawEmployee === "object" && rawEmployee && typeof rawEmployee.id === "string" && rawEmployee.id
+                  ? rawEmployee.id
+                  : makeId("emp"),
+              name: employeeName,
+              row: rowCursor
+            });
+
+            rowCursor += 1;
+          }
+
+          if (!employees.length) {
+            continue;
+          }
+
+          normalizedDepartments.push({
+            id:
+              rawDepartment && typeof rawDepartment.id === "string" && rawDepartment.id
+                ? rawDepartment.id
+                : makeId("dept"),
+            name: departmentName,
+            employees
+          });
+
+          if (rowCursor < SHEET_ROWS) {
+            rowCursor += 1;
+          }
+        }
+
+        if (!normalizedDepartments.length) {
+          return normalizeBookSettings(fallback);
+        }
+
+        return {
+          rates: normalizeRates(rawSettings && rawSettings.rates),
+          departments: normalizedDepartments
+        };
+      }
+
+      function getBookSettings(book) {
+        if (!book) {
+          return normalizeBookSettings(null);
+        }
+
+        book.settings = normalizeBookSettings(book.settings);
+        return book.settings;
+      }
+
+      function normalizeCellBonuses(rawBonuses) {
+        if (!rawBonuses || typeof rawBonuses !== "object") {
+          return {};
+        }
+
+        const output = {};
+        const entries = Object.entries(rawBonuses);
+        for (let i = 0; i < entries.length; i += 1) {
+          const [key, value] = entries[i];
+          if (!/^\d+:\d+$/.test(key) || !value || typeof value !== "object") {
+            continue;
+          }
+
+          const multiplier = parseNumber(value.multiplier, 1);
+          const premium = parseNumber(value.premium, 0);
+          const advance = parseNumber(value.advance, 0);
+          const hasContent = Math.abs(multiplier - 1) > 0.0001 || premium !== 0 || advance !== 0;
+          if (!hasContent) {
+            continue;
+          }
+
+          output[key] = {
+            multiplier: round2(multiplier),
+            premium: round2(premium),
+            advance: round2(advance)
+          };
+        }
+
+        return output;
       }
 
       function parseRef(ref) {
@@ -1052,11 +1707,121 @@
         sheet.cells[key] = String(value);
       }
 
+      function applyBookSettingsToSheet(book, sheet) {
+        if (!book || !sheet) {
+          return;
+        }
+
+        const settings = getBookSettings(book);
+
+        for (let row = 4; row <= SHEET_ROWS; row += 1) {
+          setCellValue(sheet, row, 1, "");
+        }
+
+        for (let i = 0; i < settings.departments.length; i += 1) {
+          const department = settings.departments[i];
+          if (!department.employees.length) {
+            continue;
+          }
+
+          const headerRow = Math.max(4, department.employees[0].row - 1);
+          setCellValue(sheet, headerRow, 1, department.name.toUpperCase());
+
+          for (let j = 0; j < department.employees.length; j += 1) {
+            const employee = department.employees[j];
+            if (employee.row >= 1 && employee.row <= SHEET_ROWS) {
+              setCellValue(sheet, employee.row, 1, employee.name);
+            }
+          }
+        }
+
+        applyDerivedData(sheet);
+      }
+
+      function applyBookSettingsToAllSheets(book) {
+        if (!book || !Array.isArray(book.sheets)) {
+          return;
+        }
+
+        for (let i = 0; i < book.sheets.length; i += 1) {
+          applyBookSettingsToSheet(book, book.sheets[i]);
+          book.sheets[i].updatedAt = nowIso();
+        }
+        book.updatedAt = nowIso();
+      }
+
+      function getCellBonus(sheet, row, col) {
+        if (!sheet || !sheet.cellBonuses || typeof sheet.cellBonuses !== "object") {
+          return null;
+        }
+
+        const key = toCellKey(row, col);
+        if (!Object.prototype.hasOwnProperty.call(sheet.cellBonuses, key)) {
+          return null;
+        }
+
+        const value = sheet.cellBonuses[key];
+        return value && typeof value === "object" ? value : null;
+      }
+
+      function setCellBonus(sheet, row, col, bonusValue) {
+        if (!sheet) {
+          return;
+        }
+
+        if (!sheet.cellBonuses || typeof sheet.cellBonuses !== "object") {
+          sheet.cellBonuses = {};
+        }
+
+        const key = toCellKey(row, col);
+        const normalized = normalizeCellBonuses({ [key]: bonusValue || {} });
+        if (Object.prototype.hasOwnProperty.call(normalized, key)) {
+          sheet.cellBonuses[key] = normalized[key];
+        } else {
+          delete sheet.cellBonuses[key];
+        }
+      }
+
+      function hasCellBonus(sheet, row, col) {
+        return Boolean(getCellBonus(sheet, row, col));
+      }
+
       function normalizeShiftToken(value) {
         return String(value || "")
           .trim()
           .toLowerCase()
           .replace(/\s+/g, "");
+      }
+
+      function tokenMatchesSummaryValue(normalizedToken, acceptedToken) {
+        const accepted = normalizeShiftToken(acceptedToken);
+        if (!accepted) {
+          return false;
+        }
+
+        if (normalizedToken === accepted) {
+          return true;
+        }
+
+        if (accepted === "д" || accepted === "d") {
+          if (/^(д|d)[+-]\d+(?:\.\d+)?$/.test(normalizedToken)) {
+            return true;
+          }
+          if (normalizedToken === "д/н" || normalizedToken === "н/д") {
+            return true;
+          }
+        }
+
+        if (accepted === "н" || accepted === "n") {
+          if (/^(н|n)[+-]\d+(?:\.\d+)?$/.test(normalizedToken)) {
+            return true;
+          }
+          if (normalizedToken === "д/н" || normalizedToken === "н/д") {
+            return true;
+          }
+        }
+
+        return false;
       }
 
       function countTokensInRange(sheet, row, startCol, endCol, acceptedTokens) {
@@ -1069,7 +1834,7 @@
 
         for (let col = startCol; col <= endCol; col += 1) {
           const normalized = normalizeShiftToken(getCellValue(sheet, row, col));
-          if (accepted.includes(normalized)) {
+          if (accepted.some((token) => tokenMatchesSummaryValue(normalized, token))) {
             total += 1;
           }
         }
@@ -1376,6 +2141,7 @@
           cols: SHEET_COLS,
           cells: cells ? { ...cells } : buildMonthlyTemplateCells(name),
           formulaCells: {},
+          cellBonuses: {},
           createdAt: nowIso(),
           updatedAt: nowIso()
         };
@@ -1385,14 +2151,20 @@
       }
 
       function createBook(name, firstSheetName, firstSheetCells) {
+        const settings = normalizeBookSettings(null);
         const sheet = createSheet(firstSheetName || DEFAULT_MONTH_NAME, firstSheetCells);
-        return {
+
+        const book = {
           id: makeId("book"),
           name: String(name || "Лист").trim() || "Лист",
+          settings,
           sheets: [sheet],
           createdAt: nowIso(),
           updatedAt: nowIso()
         };
+
+        applyBookSettingsToSheet(book, sheet);
+        return book;
       }
 
       function defaultState() {
@@ -1449,6 +2221,7 @@
             rawSheet.formulaCells && typeof rawSheet.formulaCells === "object"
               ? { ...rawSheet.formulaCells }
               : {},
+          cellBonuses: normalizeCellBonuses(rawSheet.cellBonuses),
           createdAt: typeof rawSheet.createdAt === "string" ? rawSheet.createdAt : nowIso(),
           updatedAt: typeof rawSheet.updatedAt === "string" ? rawSheet.updatedAt : nowIso()
         };
@@ -1462,6 +2235,8 @@
           return createBook("Лист", DEFAULT_MONTH_NAME);
         }
 
+        const settings = normalizeBookSettings(rawBook.settings);
+
         const normalizedSheets = Array.isArray(rawBook.sheets)
           ? rawBook.sheets.map(normalizeSheet).filter(Boolean)
           : [];
@@ -1470,13 +2245,20 @@
           normalizedSheets.push(createSheet(DEFAULT_MONTH_NAME));
         }
 
-        return {
+        const normalizedBook = {
           id: typeof rawBook.id === "string" && rawBook.id ? rawBook.id : makeId("book"),
           name: String(rawBook.name || "Лист").trim() || "Лист",
+          settings,
           sheets: normalizedSheets,
           createdAt: typeof rawBook.createdAt === "string" ? rawBook.createdAt : nowIso(),
           updatedAt: typeof rawBook.updatedAt === "string" ? rawBook.updatedAt : nowIso()
         };
+
+        for (let i = 0; i < normalizedBook.sheets.length; i += 1) {
+          applyBookSettingsToSheet(normalizedBook, normalizedBook.sheets[i]);
+        }
+
+        return normalizedBook;
       }
 
       function normalizeState(rawState) {
@@ -1534,6 +2316,7 @@
 
         if (!hasTestSheet) {
           const testSheet = createSheet(testSheetName, buildUzhhorodFilledCells());
+          applyBookSettingsToSheet(uzhBook, testSheet);
           uzhBook.sheets.unshift(testSheet);
           uzhBook.updatedAt = nowIso();
 
@@ -1680,7 +2463,7 @@
           persistStateLocal();
           setSavedStatus("Збережено на сервері");
         } catch {
-          setSavedStatus("Локально збережено, сервер недоступний");
+          setSavedStatus(serverUnavailableStatus());
         } finally {
           isServerSaving = false;
           if (hasPendingServerSave) {
@@ -1751,7 +2534,7 @@
           }
         } catch {
           persistStateLocal();
-          setSavedStatus("Локально збережено, сервер недоступний");
+          setSavedStatus(serverUnavailableStatus());
         } finally {
           startServerSync();
         }
@@ -1827,6 +2610,33 @@
         applyViewMode();
       }
 
+      function requestFullscreenIfSupported() {
+        if (!tg || typeof tg.requestFullscreen !== "function") {
+          return;
+        }
+
+        try {
+          tg.requestFullscreen();
+        } catch {
+          // Telegram Desktop can reject fullscreen in some contexts.
+        }
+      }
+
+      function expandTelegramWindow() {
+        if (!tg) {
+          return;
+        }
+
+        tg.ready();
+        tg.expand();
+        requestFullscreenIfSupported();
+
+        setTimeout(() => {
+          tg.expand();
+          requestFullscreenIfSupported();
+        }, 260);
+      }
+
       function isFormulaCell(sheet, row, col) {
         if (!sheet || !sheet.formulaCells || typeof sheet.formulaCells !== "object") {
           return false;
@@ -1881,6 +2691,12 @@
         const formula = isFormulaCell(sheet, row, col);
         input.classList.toggle("formula-cell", formula);
         input.readOnly = formula;
+
+        td.classList.toggle("cell-has-bonus", hasCellBonus(sheet, row, col));
+        td.classList.toggle(
+          "cell-selected",
+          Boolean(selectedCell && selectedCell.rowIndex === rowIndex && selectedCell.colIndex === colIndex)
+        );
       }
 
       function activeBook() {
@@ -1893,6 +2709,411 @@
           return null;
         }
         return book.sheets.find((sheet) => sheet.id === state.activeSheetId) || null;
+      }
+
+      function updateSelectedCellLabel() {
+        if (!selectedCell) {
+          selectedCellLabel.textContent = "Клітинка: не вибрано";
+          cellBonusBtn.disabled = true;
+          return;
+        }
+
+        const row = selectedCell.rowIndex + 1;
+        const col = selectedCell.colIndex + 1;
+        selectedCellLabel.textContent = "Клітинка: " + toRef(row, col);
+        cellBonusBtn.disabled = false;
+      }
+
+      function selectGridCell(rowIndex, colIndex) {
+        selectedCell = { rowIndex, colIndex };
+        updateSelectedCellLabel();
+        renderGridValues();
+      }
+
+      function clearSelectedCell() {
+        selectedCell = null;
+        updateSelectedCellLabel();
+      }
+
+      function getPeriodRange(sheet, periodKey) {
+        const dayCount = getSheetDayCount(sheet);
+        const dayStartCol = 2;
+        const dayEndCol = Math.min(getSummaryStartCol(sheet) - 1, dayStartCol + dayCount - 1);
+        const firstHalfEndCol = Math.min(dayEndCol, 16);
+        const secondHalfStartCol = 17;
+
+        if (periodKey === "first") {
+          return {
+            periodLabel: "1-15",
+            startCol: dayStartCol,
+            endCol: firstHalfEndCol
+          };
+        }
+
+        return {
+          periodLabel: "16-" + String(dayCount),
+          startCol: secondHalfStartCol,
+          endCol: dayEndCol
+        };
+      }
+
+      function parseShiftEntry(rawValue, rates) {
+        const token = normalizeShiftToken(rawValue).replace(/,/g, ".");
+        if (!token) {
+          return null;
+        }
+
+        const dayRate = Math.max(0, parseNumber(rates.dayShift, 0));
+        const nightRate = Math.max(0, parseNumber(rates.nightShift, 0));
+        const dayHours = Math.max(1, parseNumber(rates.dayHours, DEFAULT_DAY_SHIFT_HOURS));
+        const nightHours = Math.max(1, parseNumber(rates.nightHours, DEFAULT_NIGHT_SHIFT_HOURS));
+
+        if (/^[+-]?\d+(?:\.\d+)?$/.test(token)) {
+          const hours = Math.max(0, parseNumber(token, 0));
+          return {
+            dayCount: 0,
+            nightCount: 0,
+            hours,
+            basePay: round2(hours * (dayRate / dayHours))
+          };
+        }
+
+        if (token === "д/н" || token === "н/д") {
+          return {
+            dayCount: 1,
+            nightCount: 1,
+            hours: dayHours + nightHours,
+            basePay: round2(dayRate + nightRate)
+          };
+        }
+
+        if (token === "с" || token === "с1" || token === "с2" || token === "c" || token === "c1" || token === "c2") {
+          return {
+            dayCount: 1,
+            nightCount: 0,
+            hours: dayHours,
+            basePay: round2(dayRate)
+          };
+        }
+
+        const match = /^([дdnнn])([+-]\d+(?:\.\d+)?)?$/.exec(token);
+        if (!match) {
+          return null;
+        }
+
+        const marker = match[1];
+        const modifier = parseNumber(match[2], 0);
+        const isDayShift = marker === "д" || marker === "d";
+        const shiftHours = isDayShift ? dayHours : nightHours;
+        const shiftRate = isDayShift ? dayRate : nightRate;
+        const hourlyRate = shiftRate / shiftHours;
+        const effectiveHours = Math.max(0, shiftHours + modifier);
+        const effectivePay = Math.max(0, shiftRate + modifier * hourlyRate);
+
+        return {
+          dayCount: isDayShift ? 1 : 0,
+          nightCount: isDayShift ? 0 : 1,
+          hours: round2(effectiveHours),
+          basePay: round2(effectivePay)
+        };
+      }
+
+      function calculateSalaryPeriod(sheet, book, periodKey) {
+        const settings = getBookSettings(book);
+        const range = getPeriodRange(sheet, periodKey);
+        const rows = [];
+        let grandTotal = 0;
+        let grandPremium = 0;
+        let grandAdvance = 0;
+        let grandBase = 0;
+
+        if (range.endCol < range.startCol) {
+          return {
+            periodLabel: range.periodLabel,
+            rows,
+            grandTotal,
+            grandPremium,
+            grandAdvance,
+            grandBase
+          };
+        }
+
+        for (let i = 0; i < settings.departments.length; i += 1) {
+          const department = settings.departments[i];
+          for (let j = 0; j < department.employees.length; j += 1) {
+            const employee = department.employees[j];
+            const rowData = {
+              department: department.name,
+              employee: employee.name,
+              dayCount: 0,
+              nightCount: 0,
+              hours: 0,
+              basePay: 0,
+              premium: 0,
+              advance: 0,
+              total: 0
+            };
+
+            for (let col = range.startCol; col <= range.endCol; col += 1) {
+              const entry = parseShiftEntry(getCellValue(sheet, employee.row, col), settings.rates);
+              const bonus = getCellBonus(sheet, employee.row, col);
+              const multiplier = bonus ? Math.max(0, parseNumber(bonus.multiplier, 1)) : 1;
+              const premium = bonus ? parseNumber(bonus.premium, 0) : 0;
+              const advance = bonus ? parseNumber(bonus.advance, 0) : 0;
+
+              if (entry) {
+                rowData.dayCount += entry.dayCount;
+                rowData.nightCount += entry.nightCount;
+                rowData.hours += entry.hours;
+                rowData.basePay += entry.basePay * multiplier;
+              }
+
+              if (premium) {
+                rowData.premium += premium;
+              }
+
+              if (advance) {
+                rowData.advance += advance;
+              }
+
+              if (entry || premium || advance) {
+                rowData.total += (entry ? entry.basePay * multiplier : 0) + premium - advance;
+              }
+            }
+
+            rowData.hours = round2(rowData.hours);
+            rowData.basePay = round2(rowData.basePay);
+            rowData.premium = round2(rowData.premium);
+            rowData.advance = round2(rowData.advance);
+            rowData.total = round2(rowData.total);
+
+            grandBase += rowData.basePay;
+            grandPremium += rowData.premium;
+            grandAdvance += rowData.advance;
+            grandTotal += rowData.total;
+            rows.push(rowData);
+          }
+        }
+
+        return {
+          periodLabel: range.periodLabel,
+          rows,
+          grandTotal: round2(grandTotal),
+          grandPremium: round2(grandPremium),
+          grandAdvance: round2(grandAdvance),
+          grandBase: round2(grandBase)
+        };
+      }
+
+      function renderSalaryTableRows(tbody, data) {
+        tbody.innerHTML = "";
+        if (!data.rows.length) {
+          const emptyRow = document.createElement("tr");
+          const emptyCell = document.createElement("td");
+          emptyCell.colSpan = 9;
+          emptyCell.textContent = "Немає працівників у налаштуваннях листа.";
+          emptyRow.appendChild(emptyCell);
+          tbody.appendChild(emptyRow);
+          return;
+        }
+
+        let currentDepartment = "";
+        for (let i = 0; i < data.rows.length; i += 1) {
+          const row = data.rows[i];
+          if (row.department !== currentDepartment) {
+            currentDepartment = row.department;
+            const deptRow = document.createElement("tr");
+            deptRow.className = "dept-row";
+            const deptCell = document.createElement("td");
+            deptCell.colSpan = 9;
+            deptCell.textContent = currentDepartment;
+            deptRow.appendChild(deptCell);
+            tbody.appendChild(deptRow);
+          }
+
+          const tr = document.createElement("tr");
+          tr.innerHTML =
+            "<td>" + row.department + "</td>" +
+            "<td>" + row.employee + "</td>" +
+            '<td class="number">' + formatMoney(row.dayCount) + "</td>" +
+            '<td class="number">' + formatMoney(row.nightCount) + "</td>" +
+            '<td class="number">' + formatMoney(row.hours) + "</td>" +
+            '<td class="number">' + formatMoney(row.basePay) + "</td>" +
+            '<td class="number">' + formatMoney(row.premium) + "</td>" +
+            '<td class="number">' + formatMoney(row.advance) + "</td>" +
+            '<td class="number">' + formatMoney(row.total) + "</td>";
+          tbody.appendChild(tr);
+        }
+      }
+
+      function renderSalaryPanels() {
+        const sheet = activeSheet();
+        const book = activeBook();
+
+        if (!sheet || !book) {
+          salaryFirstTitle.textContent = "1-15";
+          salarySecondTitle.textContent = "16-кінець";
+          salaryFirstBody.innerHTML = "";
+          salarySecondBody.innerHTML = "";
+          salaryFirstTotal.textContent = "-";
+          salarySecondTotal.textContent = "-";
+          return;
+        }
+
+        const firstData = calculateSalaryPeriod(sheet, book, "first");
+        const secondData = calculateSalaryPeriod(sheet, book, "second");
+
+        salaryFirstTitle.textContent = sheet.name + " | " + firstData.periodLabel;
+        salarySecondTitle.textContent = sheet.name + " | " + secondData.periodLabel;
+
+        renderSalaryTableRows(salaryFirstBody, firstData);
+        renderSalaryTableRows(salarySecondBody, secondData);
+
+        salaryFirstTotal.textContent =
+          "Підсумок: " +
+          formatMoney(firstData.grandTotal) +
+          " (База " + formatMoney(firstData.grandBase) +
+          ", Премія " + formatMoney(firstData.grandPremium) +
+          ", Аванс " + formatMoney(firstData.grandAdvance) + ")";
+
+        salarySecondTotal.textContent =
+          "Підсумок: " +
+          formatMoney(secondData.grandTotal) +
+          " (База " + formatMoney(secondData.grandBase) +
+          ", Премія " + formatMoney(secondData.grandPremium) +
+          ", Аванс " + formatMoney(secondData.grandAdvance) + ")";
+      }
+
+      function buildSalaryExportPayload(periodKey) {
+        const book = activeBook();
+        const sheet = activeSheet();
+        if (!book || !sheet) {
+          return null;
+        }
+
+        const data = calculateSalaryPeriod(sheet, book, periodKey);
+        const payload = {
+          type: CHARTS_EXPORT_PAYLOAD_TYPE,
+          book_name: book.name,
+          sheet_name: sheet.name,
+          period_label: data.periodLabel,
+          generated_at: nowIso(),
+          total: data.grandTotal,
+          rows: data.rows.map((row) => ({
+            department: row.department,
+            employee: row.employee,
+            day_count: row.dayCount,
+            night_count: row.nightCount,
+            hours: row.hours,
+            base_pay: row.basePay,
+            premium: row.premium,
+            advance: row.advance,
+            total: row.total
+          }))
+        };
+
+        let encoded = JSON.stringify(payload);
+        if (encoded.length > 3500) {
+          payload.rows = payload.rows.filter(
+            (row) =>
+              row.day_count !== 0 ||
+              row.night_count !== 0 ||
+              row.hours !== 0 ||
+              row.base_pay !== 0 ||
+              row.premium !== 0 ||
+              row.advance !== 0 ||
+              row.total !== 0
+          );
+          encoded = JSON.stringify(payload);
+        }
+
+        if (encoded.length > 3500) {
+          payload.rows = payload.rows.slice(0, 24);
+        }
+
+        return payload;
+      }
+
+      function sendSalaryExport(periodKey) {
+        const payload = buildSalaryExportPayload(periodKey);
+        if (!payload) {
+          alert("Немає активного листа або аркуша для експорту.");
+          return;
+        }
+
+        if (!tg || typeof tg.sendData !== "function") {
+          alert("Експорт у чат доступний тільки всередині Telegram mini app.");
+          return;
+        }
+
+        try {
+          tg.sendData(JSON.stringify(payload));
+          setSavedStatus("Експорт ЗП відправлено у чат");
+        } catch {
+          alert("Не вдалося відправити експорт у чат.");
+        }
+      }
+
+      function applyPastedBlock(startRowIndex, startColIndex, text) {
+        const sheet = activeSheet();
+        if (!sheet) {
+          return false;
+        }
+
+        const normalizedText = String(text || "").replace(/\r/g, "");
+        if (!normalizedText) {
+          return false;
+        }
+
+        let rows = normalizedText.split("\n");
+        if (rows.length && rows[rows.length - 1] === "") {
+          rows = rows.slice(0, -1);
+        }
+
+        let changed = false;
+        for (let r = 0; r < rows.length; r += 1) {
+          const cols = rows[r].split("\t");
+          for (let c = 0; c < cols.length; c += 1) {
+            const rowIndex = startRowIndex + r;
+            const colIndex = startColIndex + c;
+            if (rowIndex < 0 || rowIndex >= SHEET_ROWS || colIndex < 0 || colIndex >= SHEET_COLS) {
+              continue;
+            }
+
+            const row = rowIndex + 1;
+            const col = colIndex + 1;
+            if (isFormulaCell(sheet, row, col)) {
+              continue;
+            }
+
+            const key = String(rowIndex) + ":" + String(colIndex);
+            const value = String(cols[c] || "").trim();
+
+            if (value === "") {
+              if (Object.prototype.hasOwnProperty.call(sheet.cells, key)) {
+                delete sheet.cells[key];
+                changed = true;
+              }
+              continue;
+            }
+
+            if (sheet.cells[key] !== value) {
+              sheet.cells[key] = value;
+              changed = true;
+            }
+          }
+        }
+
+        if (!changed) {
+          return false;
+        }
+
+        applyDerivedData(sheet);
+        sheet.updatedAt = nowIso();
+        renderGridValues();
+        renderSalaryPanels();
+        persistStateDebounced();
+        return true;
       }
 
       function buildGridSkeleton() {
@@ -1939,6 +3160,9 @@
 
         for (let i = 0; i < state.books.length; i += 1) {
           const book = state.books[i];
+          const item = document.createElement("div");
+          item.className = "book-item";
+
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "book-btn" + (book.id === state.activeBookId ? " active" : "");
@@ -1955,7 +3179,17 @@
 
           btn.appendChild(name);
           btn.appendChild(meta);
-          bookList.appendChild(btn);
+
+          const settingsBtn = document.createElement("button");
+          settingsBtn.type = "button";
+          settingsBtn.className = "book-settings-btn";
+          settingsBtn.setAttribute("data-book-settings-id", book.id);
+          settingsBtn.setAttribute("aria-label", "Налаштування листа");
+          settingsBtn.textContent = "⚙";
+
+          item.appendChild(btn);
+          item.appendChild(settingsBtn);
+          bookList.appendChild(item);
         }
       }
 
@@ -2032,6 +3266,8 @@
         renderSheetTabs();
         renderHeader();
         renderGridValues();
+        renderSalaryPanels();
+        updateSelectedCellLabel();
       }
 
       function switchToBook(bookId) {
@@ -2042,6 +3278,7 @@
 
         state.activeBookId = book.id;
         state.activeSheetId = book.sheets.length ? book.sheets[0].id : "";
+        clearSelectedCell();
 
         renderAll();
         persistStateDebounced();
@@ -2058,6 +3295,7 @@
         }
 
         state.activeSheetId = sheetId;
+        clearSelectedCell();
         renderAll();
         persistStateDebounced();
       }
@@ -2095,6 +3333,214 @@
         nameModalBackdrop.classList.add("hidden");
       }
 
+      function openBonusModal() {
+        const sheet = activeSheet();
+        if (!sheet || !selectedCell) {
+          return;
+        }
+
+        const row = selectedCell.rowIndex + 1;
+        const col = selectedCell.colIndex + 1;
+        const bonus = getCellBonus(sheet, row, col);
+
+        bonusMultiplierInput.value = bonus ? String(parseNumber(bonus.multiplier, 1)) : "";
+        bonusPremiumInput.value = bonus ? String(parseNumber(bonus.premium, 0)) : "";
+        bonusAdvanceInput.value = bonus ? String(parseNumber(bonus.advance, 0)) : "";
+        bonusError.textContent = "";
+
+        bonusModalBackdrop.classList.remove("hidden");
+        setTimeout(() => bonusMultiplierInput.focus(), 0);
+      }
+
+      function closeBonusModal() {
+        bonusModalBackdrop.classList.add("hidden");
+      }
+
+      function saveSelectedCellBonus() {
+        const sheet = activeSheet();
+        if (!sheet || !selectedCell) {
+          return;
+        }
+
+        const multiplierRaw = String(bonusMultiplierInput.value || "").trim();
+        const premiumRaw = String(bonusPremiumInput.value || "").trim();
+        const advanceRaw = String(bonusAdvanceInput.value || "").trim();
+
+        const multiplier = multiplierRaw ? parseNumber(multiplierRaw, NaN) : 1;
+        const premium = premiumRaw ? parseNumber(premiumRaw, NaN) : 0;
+        const advance = advanceRaw ? parseNumber(advanceRaw, NaN) : 0;
+
+        if (!Number.isFinite(multiplier) || multiplier < 0) {
+          bonusError.textContent = "Множник має бути числом 0 або більше.";
+          return;
+        }
+
+        if (!Number.isFinite(premium) || !Number.isFinite(advance)) {
+          bonusError.textContent = "Премія та аванс мають бути числами.";
+          return;
+        }
+
+        const row = selectedCell.rowIndex + 1;
+        const col = selectedCell.colIndex + 1;
+        setCellBonus(sheet, row, col, { multiplier, premium, advance });
+        sheet.updatedAt = nowIso();
+
+        closeBonusModal();
+        renderGridValues();
+        renderSalaryPanels();
+        persistStateDebounced();
+      }
+
+      function clearSelectedCellBonus() {
+        const sheet = activeSheet();
+        if (!sheet || !selectedCell) {
+          return;
+        }
+
+        const row = selectedCell.rowIndex + 1;
+        const col = selectedCell.colIndex + 1;
+        setCellBonus(sheet, row, col, null);
+        sheet.updatedAt = nowIso();
+
+        closeBonusModal();
+        renderGridValues();
+        renderSalaryPanels();
+        persistStateDebounced();
+      }
+
+      function createDepartmentEditorCard(name, employeesText) {
+        const card = document.createElement("div");
+        card.className = "department-card";
+
+        const head = document.createElement("div");
+        head.className = "department-head";
+
+        const nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.placeholder = "Назва департаменту";
+        nameInput.className = "department-name-input";
+        nameInput.value = String(name || "");
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "department-delete";
+        deleteBtn.textContent = "Видалити";
+        deleteBtn.addEventListener("click", () => {
+          card.remove();
+        });
+
+        head.appendChild(nameInput);
+        head.appendChild(deleteBtn);
+
+        const employeesInput = document.createElement("textarea");
+        employeesInput.className = "department-employees";
+        employeesInput.placeholder = "Працівники (кожен з нового рядка)";
+        employeesInput.value = String(employeesText || "");
+
+        card.appendChild(head);
+        card.appendChild(employeesInput);
+        return card;
+      }
+
+      function openBookSettingsModal(bookId) {
+        const fallbackBook = activeBook();
+        const book = state.books.find((item) => item.id === (bookId || (fallbackBook && fallbackBook.id))) || null;
+        if (!book) {
+          return;
+        }
+
+        const settings = getBookSettings(book);
+        editingBookId = book.id;
+
+        dayRateInput.value = String(settings.rates.dayShift);
+        nightRateInput.value = String(settings.rates.nightShift);
+        departmentsList.innerHTML = "";
+
+        for (let i = 0; i < settings.departments.length; i += 1) {
+          const department = settings.departments[i];
+          const employeeLines = department.employees.map((employee) => employee.name).join("\n");
+          departmentsList.appendChild(createDepartmentEditorCard(department.name, employeeLines));
+        }
+
+        bookSettingsError.textContent = "";
+        bookSettingsModalBackdrop.classList.remove("hidden");
+      }
+
+      function closeBookSettingsModal() {
+        bookSettingsModalBackdrop.classList.add("hidden");
+        editingBookId = "";
+      }
+
+      function saveBookSettingsFromModal() {
+        const book = state.books.find((item) => item.id === editingBookId) || null;
+        if (!book) {
+          bookSettingsError.textContent = "Активний лист не знайдено.";
+          return;
+        }
+
+        const dayShift = parseNumber(dayRateInput.value, NaN);
+        const nightShift = parseNumber(nightRateInput.value, NaN);
+        if (!Number.isFinite(dayShift) || dayShift < 0 || !Number.isFinite(nightShift) || nightShift < 0) {
+          bookSettingsError.textContent = "Ставки мають бути числами 0 або більше.";
+          return;
+        }
+
+        const cards = departmentsList.querySelectorAll(".department-card");
+        const departments = [];
+
+        for (let i = 0; i < cards.length; i += 1) {
+          const card = cards[i];
+          const nameInput = card.querySelector(".department-name-input");
+          const employeesInput = card.querySelector(".department-employees");
+          if (!(nameInput instanceof HTMLInputElement) || !(employeesInput instanceof HTMLTextAreaElement)) {
+            continue;
+          }
+
+          const departmentName = nameInput.value.trim();
+          if (!departmentName) {
+            continue;
+          }
+
+          const employeeNames = employeesInput.value
+            .split(/\r?\n/)
+            .map((value) => value.trim())
+            .filter(Boolean);
+
+          if (!employeeNames.length) {
+            continue;
+          }
+
+          departments.push({
+            id: makeId("dept"),
+            name: departmentName,
+            employees: employeeNames.map((employeeName) => ({
+              id: makeId("emp"),
+              name: employeeName
+            }))
+          });
+        }
+
+        if (!departments.length) {
+          bookSettingsError.textContent = "Додайте хоча б один департамент з працівниками.";
+          return;
+        }
+
+        book.settings = normalizeBookSettings({
+          rates: {
+            dayShift,
+            nightShift,
+            dayHours: DEFAULT_DAY_SHIFT_HOURS,
+            nightHours: DEFAULT_NIGHT_SHIFT_HOURS
+          },
+          departments
+        });
+
+        applyBookSettingsToAllSheets(book);
+        closeBookSettingsModal();
+        renderAll();
+        persistStateDebounced();
+      }
+
       function addBook(name) {
         const exists = state.books.some((book) => book.name.toLowerCase() === name.toLowerCase());
         if (exists) {
@@ -2123,6 +3569,7 @@
 
         const cells = buildMonthlyTemplateCells(name);
         const sheet = createSheet(name, cells);
+        applyBookSettingsToSheet(book, sheet);
         book.sheets.push(sheet);
         book.updatedAt = nowIso();
         state.activeSheetId = sheet.id;
@@ -2202,6 +3649,15 @@
       }
 
       bookList.addEventListener("click", (event) => {
+        const settingsTarget = event.target.closest("button[data-book-settings-id]");
+        if (settingsTarget) {
+          const targetBookId = settingsTarget.getAttribute("data-book-settings-id");
+          if (targetBookId) {
+            openBookSettingsModal(targetBookId);
+          }
+          return;
+        }
+
         const target = event.target.closest("button[data-book-id]");
         if (!target) {
           return;
@@ -2223,6 +3679,61 @@
           return;
         }
         switchToSheet(sheetId);
+      });
+
+      gridBody.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) {
+          return;
+        }
+
+        const r = target.getAttribute("data-r");
+        const c = target.getAttribute("data-c");
+        if (r === null || c === null) {
+          return;
+        }
+
+        selectGridCell(Number(r), Number(c));
+      });
+
+      gridBody.addEventListener("focusin", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) {
+          return;
+        }
+
+        const r = target.getAttribute("data-r");
+        const c = target.getAttribute("data-c");
+        if (r === null || c === null) {
+          return;
+        }
+
+        selectGridCell(Number(r), Number(c));
+      });
+
+      gridBody.addEventListener("paste", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) {
+          return;
+        }
+
+        const r = target.getAttribute("data-r");
+        const c = target.getAttribute("data-c");
+        if (r === null || c === null) {
+          return;
+        }
+
+        const clipboardData = event.clipboardData;
+        const text = clipboardData ? clipboardData.getData("text/plain") : "";
+        if (!text || (!text.includes("\t") && !text.includes("\n"))) {
+          return;
+        }
+
+        event.preventDefault();
+        const pasted = applyPastedBlock(Number(r), Number(c), text);
+        if (pasted) {
+          setSavedStatus("Дані вставлено блоком");
+        }
       });
 
       gridBody.addEventListener("input", (event) => {
@@ -2260,6 +3771,7 @@
         applyDerivedData(sheet);
         sheet.updatedAt = nowIso();
         renderGridValues();
+        renderSalaryPanels();
         persistStateDebounced();
       });
 
@@ -2275,6 +3787,16 @@
       addSheetAction.addEventListener("click", () => {
         closeMenu();
         openNameModal("sheet");
+      });
+
+      bookSettingsAction.addEventListener("click", () => {
+        closeMenu();
+        openBookSettingsModal();
+      });
+
+      pasteTableAction.addEventListener("click", () => {
+        closeMenu();
+        alert("Виділіть стартову клітинку та натисніть Ctrl+V, щоб вставити таблицю з Excel блоком.");
       });
 
       deleteBookAction.addEventListener("click", () => {
@@ -2304,6 +3826,58 @@
         handleCreateFromModal();
       });
 
+      cellBonusBtn.addEventListener("click", () => {
+        openBonusModal();
+      });
+
+      cancelBonusBtn.addEventListener("click", () => {
+        closeBonusModal();
+      });
+
+      saveBonusBtn.addEventListener("click", () => {
+        saveSelectedCellBonus();
+      });
+
+      clearBonusBtn.addEventListener("click", () => {
+        clearSelectedCellBonus();
+      });
+
+      bonusModalBackdrop.addEventListener("click", (event) => {
+        if (event.target === bonusModalBackdrop) {
+          closeBonusModal();
+        }
+      });
+
+      bookSettingsBtn.addEventListener("click", () => {
+        openBookSettingsModal();
+      });
+
+      addDepartmentBtn.addEventListener("click", () => {
+        departmentsList.appendChild(createDepartmentEditorCard("", ""));
+      });
+
+      cancelBookSettingsBtn.addEventListener("click", () => {
+        closeBookSettingsModal();
+      });
+
+      saveBookSettingsBtn.addEventListener("click", () => {
+        saveBookSettingsFromModal();
+      });
+
+      bookSettingsModalBackdrop.addEventListener("click", (event) => {
+        if (event.target === bookSettingsModalBackdrop) {
+          closeBookSettingsModal();
+        }
+      });
+
+      salaryExportFirstBtn.addEventListener("click", () => {
+        sendSalaryExport("first");
+      });
+
+      salaryExportSecondBtn.addEventListener("click", () => {
+        sendSalaryExport("second");
+      });
+
       nameModalBackdrop.addEventListener("click", (event) => {
         if (event.target === nameModalBackdrop) {
           closeNameModal();
@@ -2321,6 +3895,8 @@
         if (event.key === "Escape") {
           closeMenu();
           closeNameModal();
+          closeBonusModal();
+          closeBookSettingsModal();
         }
       });
 
@@ -2351,8 +3927,16 @@
       void initializeState();
 
       if (tg) {
-        tg.ready();
-        tg.expand();
+        expandTelegramWindow();
+
+        if (typeof tg.onEvent === "function") {
+          tg.onEvent("viewportChanged", () => {
+            if (typeof tg.isExpanded === "boolean" && !tg.isExpanded) {
+              tg.expand();
+              requestFullscreenIfSupported();
+            }
+          });
+        }
       }
 
       window.addEventListener("beforeunload", () => {
