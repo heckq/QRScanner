@@ -538,6 +538,22 @@
       box-shadow: 0 0 0 3px rgba(14, 165, 166, 0.16);
     }
 
+    .field textarea {
+      border: 1px solid #cfe0ee;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+      resize: vertical;
+      min-height: 82px;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+    }
+
+    .field textarea:focus {
+      border-color: #7dd6c8;
+      box-shadow: 0 0 0 3px rgba(14, 165, 166, 0.16);
+    }
+
     .modal-actions {
       display: flex;
       justify-content: flex-end;
@@ -571,6 +587,92 @@
       color: var(--danger);
       font-size: 13px;
       min-height: 18px;
+    }
+
+    .paste-help {
+      margin: 0;
+      font-size: 12px;
+      color: #4e687f;
+      line-height: 1.35;
+    }
+
+    .bonus-history {
+      border: 1px solid #dce8f2;
+      border-radius: 10px;
+      background: #f8fcff;
+      padding: 8px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .bonus-history-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #294e6a;
+    }
+
+    .bonus-history-list {
+      display: grid;
+      gap: 8px;
+      max-height: 190px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .bonus-history-empty {
+      margin: 0;
+      font-size: 12px;
+      color: #557089;
+    }
+
+    .bonus-history-item {
+      border: 1px solid #d8e6f2;
+      border-radius: 9px;
+      background: #fff;
+      padding: 8px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .bonus-history-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .bonus-history-action {
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-weight: 700;
+      border: 1px solid #c7dced;
+      background: #f0f8ff;
+      color: #2e5675;
+    }
+
+    .bonus-history-action.is-clear {
+      border-color: #f0c8c8;
+      background: #fff4f4;
+      color: #994242;
+    }
+
+    .bonus-history-date {
+      color: #557089;
+    }
+
+    .bonus-history-values {
+      font-size: 12px;
+      color: #2a4d68;
+      font-weight: 600;
+    }
+
+    .bonus-history-comment {
+      font-size: 12px;
+      color: #3d5e78;
+      line-height: 1.35;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .book-item {
@@ -1009,6 +1111,7 @@
           <button id="addSheetAction" class="menu-item" type="button">+ Додати новий аркуш</button>
           <button id="bookSettingsAction" class="menu-item" type="button">⚙ Налаштування активного листа</button>
           <button id="pasteTableAction" class="menu-item" type="button">Вставити таблицю (Ctrl+V)</button>
+          <button id="copySheetAction" class="menu-item" type="button">Скопіювати активний аркуш</button>
           <button id="deleteBookAction" class="menu-item danger" type="button">Видалити активний лист</button>
           <button id="deleteSheetAction" class="menu-item danger" type="button">Видалити активний аркуш</button>
         </div>
@@ -1131,6 +1234,22 @@
     </div>
   </div>
 
+  <div id="pasteModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pasteModalTitle">
+      <h3 id="pasteModalTitle">Вставити Блок Таблиці</h3>
+      <p class="paste-help">Виберіть стартову клітинку в таблиці, вставте блок з Excel/Sheets у поле нижче і натисніть "Вставити".</p>
+      <div class="field">
+        <label for="pasteBlockInput">Скопійований блок</label>
+        <textarea id="pasteBlockInput" placeholder="Ctrl+V сюди"></textarea>
+      </div>
+      <div id="pasteError" class="error"></div>
+      <div class="modal-actions">
+        <button id="cancelPasteBtn" class="btn secondary" type="button">Скасувати</button>
+        <button id="applyPasteBtn" class="btn primary" type="button">Вставити</button>
+      </div>
+    </div>
+  </div>
+
   <div id="bonusModalBackdrop" class="modal-backdrop hidden">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bonusModalTitle">
       <h3 id="bonusModalTitle">Бонуси Для Клітинки</h3>
@@ -1146,6 +1265,14 @@
       <div class="field">
         <label for="bonusAdvanceInput">Аванс (-)</label>
         <input id="bonusAdvanceInput" type="number" inputmode="decimal" step="1" placeholder="1000">
+      </div>
+      <div class="field">
+        <label for="bonusCommentInput">Коментар (за що бонус/аванс/множник)</label>
+        <textarea id="bonusCommentInput" placeholder="Наприклад: Премія за додаткову зміну"></textarea>
+      </div>
+      <div class="bonus-history">
+        <div class="bonus-history-title">Історія Змін</div>
+        <div id="bonusHistoryList" class="bonus-history-list"></div>
       </div>
       <div id="bonusError" class="error"></div>
       <div class="modal-actions">
@@ -1208,6 +1335,7 @@
       const CHARTS_EXPORT_PAYLOAD_TYPE = "charts_salary_export";
       const DEFAULT_DAY_SHIFT_HOURS = 12;
       const DEFAULT_NIGHT_SHIFT_HOURS = 12;
+      const BONUS_HISTORY_LIMIT = 40;
 
       const BLOCK_TOP = "top";
       const BLOCK_BOTTOM = "bottom";
@@ -1333,6 +1461,7 @@
       const addSheetAction = document.getElementById("addSheetAction");
       const bookSettingsAction = document.getElementById("bookSettingsAction");
       const pasteTableAction = document.getElementById("pasteTableAction");
+      const copySheetAction = document.getElementById("copySheetAction");
       const deleteBookAction = document.getElementById("deleteBookAction");
       const deleteSheetAction = document.getElementById("deleteSheetAction");
 
@@ -1362,10 +1491,19 @@
       const cancelNameBtn = document.getElementById("cancelNameBtn");
       const createNameBtn = document.getElementById("createNameBtn");
 
+      const pasteModalBackdrop = document.getElementById("pasteModalBackdrop");
+      const pasteBlockInput = document.getElementById("pasteBlockInput");
+      const pasteError = document.getElementById("pasteError");
+      const cancelPasteBtn = document.getElementById("cancelPasteBtn");
+      const applyPasteBtn = document.getElementById("applyPasteBtn");
+
       const bonusModalBackdrop = document.getElementById("bonusModalBackdrop");
+      const bonusModalDescription = document.getElementById("bonusModalDescription");
       const bonusMultiplierInput = document.getElementById("bonusMultiplierInput");
       const bonusPremiumInput = document.getElementById("bonusPremiumInput");
       const bonusAdvanceInput = document.getElementById("bonusAdvanceInput");
+      const bonusCommentInput = document.getElementById("bonusCommentInput");
+      const bonusHistoryList = document.getElementById("bonusHistoryList");
       const bonusError = document.getElementById("bonusError");
       const clearBonusBtn = document.getElementById("clearBonusBtn");
       const cancelBonusBtn = document.getElementById("cancelBonusBtn");
@@ -1449,6 +1587,21 @@
           minimumFractionDigits: 0,
           maximumFractionDigits: 2
         });
+      }
+
+      function formatCompactNumber(value) {
+        const rounded = round2(value);
+        if (Math.abs(rounded - Math.round(rounded)) < 0.0001) {
+          return String(Math.round(rounded));
+        }
+        return rounded.toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+      }
+
+      function normalizeBonusComment(rawComment) {
+        return String(rawComment || "")
+          .replace(/\s+/g, " ")
+          .trim()
+          .slice(0, 280);
       }
 
       function buildDefaultSettings() {
@@ -1591,6 +1744,67 @@
             premium: round2(premium),
             advance: round2(advance)
           };
+        }
+
+        return output;
+      }
+
+      function normalizeCellBonusHistory(rawHistory) {
+        if (!rawHistory || typeof rawHistory !== "object") {
+          return {};
+        }
+
+        const output = {};
+        const entries = Object.entries(rawHistory);
+        for (let i = 0; i < entries.length; i += 1) {
+          const [key, value] = entries[i];
+          if (!/^\d+:\d+$/.test(key) || !Array.isArray(value)) {
+            continue;
+          }
+
+          const normalizedItems = [];
+          for (let j = 0; j < value.length; j += 1) {
+            const item = value[j];
+            if (!item || typeof item !== "object") {
+              continue;
+            }
+
+            const atRaw = typeof item.at === "string" ? item.at.trim() : "";
+            const atDate = atRaw ? new Date(atRaw) : null;
+            const at = atDate && !Number.isNaN(atDate.getTime()) ? atDate.toISOString() : nowIso();
+
+            const action = item.action === "clear" ? "clear" : "save";
+            const multiplier = round2(parseNumber(item.multiplier, 1));
+            const premium = round2(parseNumber(item.premium, 0));
+            const advance = round2(parseNumber(item.advance, 0));
+            const comment = normalizeBonusComment(item.comment);
+
+            const hasContent =
+              action === "clear" ||
+              Math.abs(multiplier - 1) > 0.0001 ||
+              premium !== 0 ||
+              advance !== 0 ||
+              comment;
+
+            if (!hasContent) {
+              continue;
+            }
+
+            normalizedItems.push({
+              at,
+              action,
+              multiplier,
+              premium,
+              advance,
+              comment
+            });
+          }
+
+          if (!normalizedItems.length) {
+            continue;
+          }
+
+          output[key] = normalizedItems.slice(-BONUS_HISTORY_LIMIT);
         }
 
         return output;
@@ -1786,11 +2000,210 @@
         return Boolean(getCellBonus(sheet, row, col));
       }
 
+      function getCellBonusHistory(sheet, row, col) {
+        if (!sheet || !sheet.cellBonusHistory || typeof sheet.cellBonusHistory !== "object") {
+          return [];
+        }
+
+        const key = toCellKey(row, col);
+        const value = sheet.cellBonusHistory[key];
+        return Array.isArray(value) ? value : [];
+      }
+
+      function appendCellBonusHistory(sheet, row, col, historyItem) {
+        if (!sheet || !historyItem || typeof historyItem !== "object") {
+          return;
+        }
+
+        if (!sheet.cellBonusHistory || typeof sheet.cellBonusHistory !== "object") {
+          sheet.cellBonusHistory = {};
+        }
+
+        const key = toCellKey(row, col);
+        const current = Array.isArray(sheet.cellBonusHistory[key]) ? sheet.cellBonusHistory[key] : [];
+        const normalized = normalizeCellBonusHistory({
+          [key]: current.concat([historyItem])
+        });
+
+        if (normalized[key] && normalized[key].length) {
+          sheet.cellBonusHistory[key] = normalized[key];
+        }
+      }
+
+      function formatHistoryDateTime(isoString) {
+        const parsed = new Date(String(isoString || ""));
+        if (Number.isNaN(parsed.getTime())) {
+          return "";
+        }
+
+        return parsed.toLocaleString("uk-UA", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      }
+
+      function renderBonusHistoryList(sheet, row, col) {
+        if (!bonusHistoryList) {
+          return;
+        }
+
+        bonusHistoryList.innerHTML = "";
+
+        const history = getCellBonusHistory(sheet, row, col);
+        if (!history.length) {
+          const empty = document.createElement("p");
+          empty.className = "bonus-history-empty";
+          empty.textContent = "Історія порожня.";
+          bonusHistoryList.appendChild(empty);
+          return;
+        }
+
+        for (let i = history.length - 1; i >= 0; i -= 1) {
+          const item = history[i];
+          const rowNode = document.createElement("div");
+          rowNode.className = "bonus-history-item";
+
+          const top = document.createElement("div");
+          top.className = "bonus-history-top";
+
+          const action = document.createElement("span");
+          action.className = "bonus-history-action" + (item.action === "clear" ? " is-clear" : "");
+          action.textContent = item.action === "clear" ? "Очищено" : "Збережено";
+
+          const date = document.createElement("span");
+          date.className = "bonus-history-date";
+          date.textContent = formatHistoryDateTime(item.at);
+
+          top.appendChild(action);
+          top.appendChild(date);
+
+          const values = document.createElement("div");
+          values.className = "bonus-history-values";
+          values.textContent =
+            "x" + formatCompactNumber(item.multiplier) +
+            " | Премія " + formatCompactNumber(item.premium) +
+            " | Аванс " + formatCompactNumber(item.advance);
+
+          rowNode.appendChild(top);
+          rowNode.appendChild(values);
+
+          if (item.comment) {
+            const comment = document.createElement("div");
+            comment.className = "bonus-history-comment";
+            comment.textContent = item.comment;
+            rowNode.appendChild(comment);
+          }
+
+          bonusHistoryList.appendChild(rowNode);
+        }
+      }
+
+      function buildEmployeeRowSet(book) {
+        const output = new Set();
+        if (!book) {
+          return output;
+        }
+
+        const settings = getBookSettings(book);
+        for (let i = 0; i < settings.departments.length; i += 1) {
+          const department = settings.departments[i];
+          for (let j = 0; j < department.employees.length; j += 1) {
+            const employee = department.employees[j];
+            if (employee.row >= 1 && employee.row <= SHEET_ROWS) {
+              output.add(employee.row);
+            }
+          }
+        }
+
+        return output;
+      }
+
+      function isShiftEntryCell(sheet, employeeRows, row, col) {
+        if (!sheet || !employeeRows || !employeeRows.has(row)) {
+          return false;
+        }
+
+        const startCol = 2;
+        const endCol = getSummaryStartCol(sheet) - 1;
+        return col >= startCol && col <= endCol;
+      }
+
       function normalizeShiftToken(value) {
         return String(value || "")
           .trim()
           .toLowerCase()
+          .replace(/[\u00A0\u2007\u202F]/g, " ")
+          .replace(/[–—−]/g, "-")
+          .replace(/＋/g, "+")
+          .replace(/\\/g, "/")
           .replace(/\s+/g, "");
+      }
+
+      function normalizeShiftEntryValue(rawValue) {
+        const source = String(rawValue || "").trim();
+        if (!source) {
+          return "";
+        }
+
+        const token = normalizeShiftToken(source).replace(/,/g, ".");
+        if (!token) {
+          return "";
+        }
+
+        if (token === "д" || token === "d") {
+          return "д";
+        }
+        if (token === "н" || token === "n") {
+          return "н";
+        }
+        if (token === "д/н" || token === "н/д" || token === "d/n" || token === "n/d") {
+          return "д/н";
+        }
+        if (token === "с" || token === "c") {
+          return "с";
+        }
+        if (token === "с1" || token === "c1") {
+          return "с1";
+        }
+        if (token === "с2" || token === "c2") {
+          return "с2";
+        }
+
+        const shiftWithModifier = /^([дdнn])([+-]\d+(?:\.\d+)?)$/.exec(token);
+        if (shiftWithModifier) {
+          const marker = shiftWithModifier[1] === "д" || shiftWithModifier[1] === "d" ? "д" : "н";
+          const modifierValue = parseNumber(shiftWithModifier[2], NaN);
+          if (!Number.isFinite(modifierValue)) {
+            return source;
+          }
+          if (Math.abs(modifierValue) < 0.0001) {
+            return marker;
+          }
+          const sign = modifierValue >= 0 ? "+" : "-";
+          return marker + sign + formatCompactNumber(Math.abs(modifierValue));
+        }
+
+        if (/^[+-]?\d+(?:\.\d+)?$/.test(token)) {
+          return formatCompactNumber(parseNumber(token, 0));
+        }
+
+        return source;
+      }
+
+      function normalizeIncomingCellValue(sheet, employeeRows, row, col, rawValue) {
+        const trimmed = String(rawValue || "").trim();
+        if (!trimmed) {
+          return "";
+        }
+
+        if (isShiftEntryCell(sheet, employeeRows, row, col)) {
+          return normalizeShiftEntryValue(trimmed);
+        }
+
+        return trimmed;
       }
 
       function tokenMatchesSummaryValue(normalizedToken, acceptedToken) {
@@ -1819,6 +2232,16 @@
           if (normalizedToken === "д/н" || normalizedToken === "н/д") {
             return true;
           }
+        }
+
+        if (accepted === "с" && normalizedToken === "c") {
+          return true;
+        }
+        if (accepted === "с1" && normalizedToken === "c1") {
+          return true;
+        }
+        if (accepted === "с2" && normalizedToken === "c2") {
+          return true;
         }
 
         return false;
@@ -2142,6 +2565,7 @@
           cells: cells ? { ...cells } : buildMonthlyTemplateCells(name),
           formulaCells: {},
           cellBonuses: {},
+          cellBonusHistory: {},
           createdAt: nowIso(),
           updatedAt: nowIso()
         };
@@ -2222,6 +2646,7 @@
               ? { ...rawSheet.formulaCells }
               : {},
           cellBonuses: normalizeCellBonuses(rawSheet.cellBonuses),
+          cellBonusHistory: normalizeCellBonusHistory(rawSheet.cellBonusHistory),
           createdAt: typeof rawSheet.createdAt === "string" ? rawSheet.createdAt : nowIso(),
           updatedAt: typeof rawSheet.updatedAt === "string" ? rawSheet.updatedAt : nowIso()
         };
@@ -3054,9 +3479,171 @@
         }
       }
 
-      function applyPastedBlock(startRowIndex, startColIndex, text) {
+      function looksLikeTableText(text) {
+        const normalized = String(text || "").replace(/\r/g, "");
+        if (!normalized.trim()) {
+          return false;
+        }
+
+        if (normalized.includes("\t")) {
+          return true;
+        }
+
+        const lines = normalized
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+
+        if (lines.length < 2) {
+          return false;
+        }
+
+        return detectPastedDelimiter(lines) !== null;
+      }
+
+      function splitDelimitedRow(rowText, delimiter) {
+        const cells = [];
+        let current = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < rowText.length; i += 1) {
+          const char = rowText[i];
+
+          if (char === '"') {
+            if (inQuotes && rowText[i + 1] === '"') {
+              current += '"';
+              i += 1;
+              continue;
+            }
+            inQuotes = !inQuotes;
+            continue;
+          }
+
+          if (!inQuotes && char === delimiter) {
+            cells.push(current);
+            current = "";
+            continue;
+          }
+
+          current += char;
+        }
+
+        cells.push(current);
+        return cells;
+      }
+
+      function detectPastedDelimiter(lines) {
+        if (lines.some((line) => line.includes("\t"))) {
+          return "\t";
+        }
+
+        const candidates = [";", "|"];
+        for (let i = 0; i < candidates.length; i += 1) {
+          const delimiter = candidates[i];
+          if (lines.some((line) => line.includes(delimiter))) {
+            return delimiter;
+          }
+        }
+
+        return null;
+      }
+
+      function parsePastedRows(text) {
+        const normalized = String(text || "").replace(/\r/g, "");
+        if (!normalized.trim()) {
+          return [];
+        }
+
+        let rows = normalized.split("\n");
+        if (rows.length && rows[rows.length - 1] === "") {
+          rows = rows.slice(0, -1);
+        }
+
+        const delimiter = detectPastedDelimiter(rows);
+        if (!delimiter) {
+          return rows.map((row) => [row]);
+        }
+
+        return rows.map((row) => splitDelimitedRow(row, delimiter));
+      }
+
+      function copyTextToClipboard(text) {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+          return navigator.clipboard.writeText(text);
+        }
+
+        return new Promise((resolve, reject) => {
+          const helper = document.createElement("textarea");
+          helper.value = text;
+          helper.setAttribute("readonly", "readonly");
+          helper.style.position = "fixed";
+          helper.style.opacity = "0";
+          document.body.appendChild(helper);
+          helper.select();
+
+          try {
+            const ok = document.execCommand("copy");
+            document.body.removeChild(helper);
+            if (ok) {
+              resolve();
+            } else {
+              reject(new Error("Clipboard copy failed"));
+            }
+          } catch (error) {
+            document.body.removeChild(helper);
+            reject(error);
+          }
+        });
+      }
+
+      function buildSheetClipboardText(sheet) {
+        const rows = [];
+
+        for (let row = 1; row <= SHEET_ROWS; row += 1) {
+          const cols = [];
+          for (let col = 1; col <= SHEET_COLS; col += 1) {
+            cols.push(getCellValue(sheet, row, col));
+          }
+
+          while (cols.length && cols[cols.length - 1] === "") {
+            cols.pop();
+          }
+
+          rows.push(cols.join("\t"));
+        }
+
+        while (rows.length && rows[rows.length - 1] === "") {
+          rows.pop();
+        }
+
+        return rows.join("\n");
+      }
+
+      async function copyActiveSheetToClipboard() {
         const sheet = activeSheet();
         if (!sheet) {
+          alert("Немає активного аркуша для копіювання.");
+          return;
+        }
+
+        const text = buildSheetClipboardText(sheet);
+        if (!text) {
+          alert("Активний аркуш порожній.");
+          return;
+        }
+
+        try {
+          await copyTextToClipboard(text);
+          setSavedStatus("Аркуш скопійовано в буфер");
+        } catch {
+          alert("Не вдалося скопіювати аркуш у буфер.");
+        }
+      }
+
+      function applyPastedBlock(startRowIndex, startColIndex, text) {
+        const sheet = activeSheet();
+        const book = activeBook();
+        if (!sheet || !book) {
           return false;
         }
 
@@ -3065,14 +3652,15 @@
           return false;
         }
 
-        let rows = normalizedText.split("\n");
-        if (rows.length && rows[rows.length - 1] === "") {
-          rows = rows.slice(0, -1);
+        const rows = parsePastedRows(normalizedText);
+        if (!rows.length) {
+          return false;
         }
 
+        const employeeRows = buildEmployeeRowSet(book);
         let changed = false;
         for (let r = 0; r < rows.length; r += 1) {
-          const cols = rows[r].split("\t");
+          const cols = rows[r];
           for (let c = 0; c < cols.length; c += 1) {
             const rowIndex = startRowIndex + r;
             const colIndex = startColIndex + c;
@@ -3087,7 +3675,7 @@
             }
 
             const key = String(rowIndex) + ":" + String(colIndex);
-            const value = String(cols[c] || "").trim();
+            const value = normalizeIncomingCellValue(sheet, employeeRows, row, col, cols[c] || "");
 
             if (value === "") {
               if (Object.prototype.hasOwnProperty.call(sheet.cells, key)) {
@@ -3333,6 +3921,50 @@
         nameModalBackdrop.classList.add("hidden");
       }
 
+      function openPasteModal() {
+        const sheet = activeSheet();
+        if (!sheet) {
+          alert("Немає активного аркуша для вставки.");
+          return;
+        }
+
+        if (!selectedCell) {
+          alert("Спочатку виберіть стартову клітинку в таблиці.");
+          return;
+        }
+
+        pasteBlockInput.value = "";
+        pasteError.textContent = "";
+        pasteModalBackdrop.classList.remove("hidden");
+        setTimeout(() => pasteBlockInput.focus(), 0);
+      }
+
+      function closePasteModal() {
+        pasteModalBackdrop.classList.add("hidden");
+      }
+
+      function applyPasteFromModal() {
+        if (!selectedCell) {
+          pasteError.textContent = "Оберіть стартову клітинку перед вставкою.";
+          return;
+        }
+
+        const text = String(pasteBlockInput.value || "");
+        if (!text.trim()) {
+          pasteError.textContent = "Вставте скопійований блок у поле вище.";
+          return;
+        }
+
+        const pasted = applyPastedBlock(selectedCell.rowIndex, selectedCell.colIndex, text);
+        if (!pasted) {
+          pasteError.textContent = "Не вдалося вставити блок. Перевірте, чи вибрана правильна клітинка.";
+          return;
+        }
+
+        closePasteModal();
+        setSavedStatus("Дані вставлено блоком");
+      }
+
       function openBonusModal() {
         const sheet = activeSheet();
         if (!sheet || !selectedCell) {
@@ -3346,6 +3978,10 @@
         bonusMultiplierInput.value = bonus ? String(parseNumber(bonus.multiplier, 1)) : "";
         bonusPremiumInput.value = bonus ? String(parseNumber(bonus.premium, 0)) : "";
         bonusAdvanceInput.value = bonus ? String(parseNumber(bonus.advance, 0)) : "";
+        bonusCommentInput.value = "";
+        bonusModalDescription.textContent =
+          "Клітинка " + toRef(row, col) + ". Налаштування застосовуються в розрахунку ЗП.";
+        renderBonusHistoryList(sheet, row, col);
         bonusError.textContent = "";
 
         bonusModalBackdrop.classList.remove("hidden");
@@ -3365,6 +4001,7 @@
         const multiplierRaw = String(bonusMultiplierInput.value || "").trim();
         const premiumRaw = String(bonusPremiumInput.value || "").trim();
         const advanceRaw = String(bonusAdvanceInput.value || "").trim();
+        const comment = normalizeBonusComment(bonusCommentInput.value);
 
         const multiplier = multiplierRaw ? parseNumber(multiplierRaw, NaN) : 1;
         const premium = premiumRaw ? parseNumber(premiumRaw, NaN) : 0;
@@ -3383,6 +4020,14 @@
         const row = selectedCell.rowIndex + 1;
         const col = selectedCell.colIndex + 1;
         setCellBonus(sheet, row, col, { multiplier, premium, advance });
+        appendCellBonusHistory(sheet, row, col, {
+          at: nowIso(),
+          action: "save",
+          multiplier,
+          premium,
+          advance,
+          comment
+        });
         sheet.updatedAt = nowIso();
 
         closeBonusModal();
@@ -3397,8 +4042,21 @@
           return;
         }
 
+        const comment = normalizeBonusComment(bonusCommentInput.value);
+
         const row = selectedCell.rowIndex + 1;
         const col = selectedCell.colIndex + 1;
+        const currentBonus = getCellBonus(sheet, row, col);
+
+        appendCellBonusHistory(sheet, row, col, {
+          at: nowIso(),
+          action: "clear",
+          multiplier: currentBonus ? parseNumber(currentBonus.multiplier, 1) : 1,
+          premium: currentBonus ? parseNumber(currentBonus.premium, 0) : 0,
+          advance: currentBonus ? parseNumber(currentBonus.advance, 0) : 0,
+          comment: comment || "Очищено"
+        });
+
         setCellBonus(sheet, row, col, null);
         sheet.updatedAt = nowIso();
 
@@ -3725,7 +4383,7 @@
 
         const clipboardData = event.clipboardData;
         const text = clipboardData ? clipboardData.getData("text/plain") : "";
-        if (!text || (!text.includes("\t") && !text.includes("\n"))) {
+        if (!looksLikeTableText(text)) {
           return;
         }
 
@@ -3743,9 +4401,12 @@
         }
 
         const sheet = activeSheet();
-        if (!sheet) {
+        const book = activeBook();
+        if (!sheet || !book) {
           return;
         }
+
+        const employeeRows = buildEmployeeRowSet(book);
 
         const r = target.getAttribute("data-r");
         const c = target.getAttribute("data-c");
@@ -3760,7 +4421,10 @@
         }
 
         const key = String(r) + ":" + String(c);
-        const value = target.value;
+        const value = normalizeIncomingCellValue(sheet, employeeRows, row, col, target.value);
+        if (target.value !== value) {
+          target.value = value;
+        }
 
         if (value === "") {
           delete sheet.cells[key];
@@ -3796,7 +4460,12 @@
 
       pasteTableAction.addEventListener("click", () => {
         closeMenu();
-        alert("Виділіть стартову клітинку та натисніть Ctrl+V, щоб вставити таблицю з Excel блоком.");
+        openPasteModal();
+      });
+
+      copySheetAction.addEventListener("click", () => {
+        closeMenu();
+        void copyActiveSheetToClipboard();
       });
 
       deleteBookAction.addEventListener("click", () => {
@@ -3820,6 +4489,27 @@
 
       cancelNameBtn.addEventListener("click", () => {
         closeNameModal();
+      });
+
+      cancelPasteBtn.addEventListener("click", () => {
+        closePasteModal();
+      });
+
+      applyPasteBtn.addEventListener("click", () => {
+        applyPasteFromModal();
+      });
+
+      pasteModalBackdrop.addEventListener("click", (event) => {
+        if (event.target === pasteModalBackdrop) {
+          closePasteModal();
+        }
+      });
+
+      pasteBlockInput.addEventListener("keydown", (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+          event.preventDefault();
+          applyPasteFromModal();
+        }
       });
 
       createNameBtn.addEventListener("click", () => {
@@ -3891,10 +4581,47 @@
         }
       });
 
+      document.addEventListener("paste", (event) => {
+        if (pasteModalBackdrop && !pasteModalBackdrop.classList.contains("hidden")) {
+          return;
+        }
+
+        if (!selectedCell) {
+          return;
+        }
+
+        const target = event.target;
+        if (
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement ||
+          (target instanceof HTMLElement && target.isContentEditable)
+        ) {
+          return;
+        }
+
+        const text = event.clipboardData ? event.clipboardData.getData("text/plain") : "";
+        if (!looksLikeTableText(text)) {
+          return;
+        }
+
+        event.preventDefault();
+        const pasted = applyPastedBlock(selectedCell.rowIndex, selectedCell.colIndex, text);
+        if (pasted) {
+          setSavedStatus("Дані вставлено блоком");
+        }
+      });
+
       document.addEventListener("keydown", (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === "c") {
+          event.preventDefault();
+          void copyActiveSheetToClipboard();
+          return;
+        }
+
         if (event.key === "Escape") {
           closeMenu();
           closeNameModal();
+          closePasteModal();
           closeBonusModal();
           closeBookSettingsModal();
         }
