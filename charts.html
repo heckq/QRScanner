@@ -154,6 +154,25 @@
       gap: 8px;
     }
 
+    .menu-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 25, 39, 0.36);
+      opacity: 0;
+      transition: opacity 160ms ease;
+      z-index: 28;
+      pointer-events: none;
+    }
+
+    .menu-backdrop.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menu-backdrop.hidden {
+      display: none;
+    }
+
     .menu-btn {
       border: 1px solid var(--line);
       background: #fff;
@@ -174,27 +193,67 @@
     }
 
     .menu-panel {
-      position: absolute;
-      z-index: 20;
-      top: calc(100% + 6px);
+      position: fixed;
+      z-index: 29;
+      top: 0;
+      bottom: 0;
       left: 0;
-      right: 0;
+      width: min(340px, 92vw);
       border: 1px solid var(--line);
-      border-radius: var(--radius-md);
+      border-radius: 0 16px 16px 0;
       background: #fff;
       box-shadow: var(--shadow-lg);
-      padding: 8px;
+      padding: 12px;
       display: grid;
       gap: 6px;
-      max-height: min(62vh, 420px);
+      grid-auto-rows: min-content;
+      align-content: start;
       overflow-y: auto;
       overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
-      animation: pop-in 140ms ease-out;
+      transform: translateX(-106%);
+      transition: transform 170ms ease;
+    }
+
+    .menu-panel.open {
+      transform: translateX(0);
     }
 
     .menu-panel.hidden {
       display: none;
+    }
+
+    .menu-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .menu-panel-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #264663;
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
+    }
+
+    .menu-close-btn {
+      border: 1px solid #d0deea;
+      background: #f4f9fd;
+      color: #274863;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .menu-close-btn:hover {
+      background: #e9f3fb;
+      border-color: #bdd3e6;
     }
 
     .menu-item {
@@ -679,6 +738,76 @@
       word-break: break-word;
     }
 
+    .sheet-history-actor {
+      margin: 0;
+      font-size: 12px;
+      color: #2f526f;
+      background: #f2f8fd;
+      border: 1px solid #d8e6f3;
+      border-radius: 10px;
+      padding: 8px 10px;
+      line-height: 1.35;
+    }
+
+    .sheet-history-list {
+      display: grid;
+      gap: 8px;
+      max-height: min(62vh, 520px);
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .sheet-history-empty {
+      margin: 0;
+      font-size: 13px;
+      color: #567089;
+    }
+
+    .sheet-history-item {
+      border: 1px solid #d6e5f2;
+      background: #fff;
+      border-radius: 10px;
+      padding: 8px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .sheet-history-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      font-size: 11px;
+      color: #48667f;
+      flex-wrap: wrap;
+    }
+
+    .sheet-history-actor-chip {
+      border-radius: 999px;
+      border: 1px solid #c6dced;
+      background: #eef7ff;
+      color: #285272;
+      font-weight: 700;
+      padding: 2px 8px;
+    }
+
+    .sheet-history-summary {
+      font-size: 13px;
+      color: #1f435f;
+      font-weight: 600;
+      line-height: 1.35;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .sheet-history-before-after {
+      font-size: 12px;
+      color: #496883;
+      line-height: 1.3;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
     .book-item {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 38px;
@@ -859,9 +988,47 @@
       font-weight: 700;
     }
 
+    .salary-table tr.employee-row td {
+      background: #fff;
+      transition: background-color 120ms ease, color 120ms ease;
+    }
+
+    .salary-table tr.employee-row:nth-child(even) td {
+      background: #fcfeff;
+    }
+
     .salary-table td.number {
       text-align: right;
       font-variant-numeric: tabular-nums;
+    }
+
+    .salary-table td.metric-base {
+      color: #1f4460;
+      font-weight: 700;
+    }
+
+    .salary-table td.metric-premium.positive {
+      background: #ecfbf1;
+      color: #1b6a43;
+      font-weight: 700;
+    }
+
+    .salary-table td.metric-advance.negative {
+      background: #fff1f1;
+      color: #9b3333;
+      font-weight: 700;
+    }
+
+    .salary-table td.metric-total.positive {
+      background: #e9faf0;
+      color: #185f3f;
+      font-weight: 800;
+    }
+
+    .salary-table td.metric-total.negative {
+      background: #ffefef;
+      color: #9f2f2f;
+      font-weight: 800;
     }
 
     .salary-total {
@@ -874,6 +1041,16 @@
       justify-content: space-between;
       gap: 8px;
       align-items: center;
+    }
+
+    .salary-total.is-positive {
+      background: #f1fcf5;
+      color: #1d5f43;
+    }
+
+    .salary-total.is-negative {
+      background: #fff3f3;
+      color: #953131;
     }
 
     .modal.modal-wide {
@@ -976,7 +1153,7 @@
       }
 
       .menu-panel {
-        max-height: calc(100vh - 150px);
+        width: min(360px, 94vw);
       }
 
       .book-list {
@@ -1114,7 +1291,12 @@
 
       <section class="menu-wrap">
         <button id="menuToggle" class="menu-btn" type="button">Меню ▾</button>
-        <div id="menuPanel" class="menu-panel hidden">
+        <div id="menuBackdrop" class="menu-backdrop hidden" aria-hidden="true"></div>
+        <div id="menuPanel" class="menu-panel hidden" role="dialog" aria-modal="true" aria-labelledby="menuPanelTitle">
+          <div class="menu-panel-head">
+            <p id="menuPanelTitle" class="menu-panel-title">Меню дій</p>
+            <button id="menuCloseBtn" class="menu-close-btn" type="button">Закрити</button>
+          </div>
           <button id="addBookAction" class="menu-item" type="button">+ Додати новий лист</button>
           <button id="addSheetAction" class="menu-item" type="button">+ Додати новий аркуш</button>
           <button id="bookSettingsAction" class="menu-item" type="button">⚙ Налаштування активного листа</button>
@@ -1149,6 +1331,7 @@
         <span id="selectedCellLabel" class="hint-chip">Клітинка: не вибрано</span>
         <button id="cellBonusBtn" class="tool-btn" type="button" disabled>Бонус для клітинки</button>
         <button id="bookSettingsBtn" class="tool-btn" type="button">Налаштування листа</button>
+        <button id="sheetHistoryBtn" class="tool-btn" type="button">Історія змін аркуша</button>
         <span class="hint-chip">Порада: вставляй дані з Excel через Ctrl+V (блоком)</span>
       </section>
 
@@ -1291,6 +1474,18 @@
     </div>
   </div>
 
+  <div id="sheetHistoryModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="sheetHistoryTitle">
+      <h3 id="sheetHistoryTitle">Історія змін аркуша</h3>
+      <p id="sheetHistoryDescription">Тут видно хто і що змінював у поточному аркуші.</p>
+      <p id="sheetHistoryActor" class="sheet-history-actor"></p>
+      <div id="sheetHistoryList" class="sheet-history-list"></div>
+      <div class="modal-actions">
+        <button id="closeSheetHistoryBtn" class="btn secondary" type="button">Закрити</button>
+      </div>
+    </div>
+  </div>
+
   <div id="bookSettingsModalBackdrop" class="modal-backdrop hidden">
     <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="bookSettingsTitle">
       <h3 id="bookSettingsTitle">Налаштування Листа</h3>
@@ -1330,6 +1525,7 @@
       const LEGACY_STORAGE_KEY = "vevi_charts_sheets_v1";
       const VIEW_MODE_STORAGE_KEY = "vevi_charts_view_mode_v1";
       const CHARTS_API_URL = resolveApiUrl();
+      const CHARTS_USERS_API_URL = resolveUsersApiUrl(CHARTS_API_URL);
       const CHARTS_API_HOST = extractHost(CHARTS_API_URL);
       const CHARTS_API_IS_GITHUB_PAGES = CHARTS_API_HOST.endsWith("github.io");
       const SYNC_INTERVAL_MS = 4000;
@@ -1344,6 +1540,7 @@
       const DEFAULT_DAY_SHIFT_HOURS = 12;
       const DEFAULT_NIGHT_SHIFT_HOURS = 12;
       const BONUS_HISTORY_LIMIT = 40;
+      const CHANGE_LOG_LIMIT = 360;
 
       const BLOCK_TOP = "top";
       const BLOCK_BOTTOM = "bottom";
@@ -1464,7 +1661,9 @@
       const emptyNote = document.getElementById("emptyNote");
 
       const menuToggle = document.getElementById("menuToggle");
+      const menuBackdrop = document.getElementById("menuBackdrop");
       const menuPanel = document.getElementById("menuPanel");
+      const menuCloseBtn = document.getElementById("menuCloseBtn");
       const addBookAction = document.getElementById("addBookAction");
       const addSheetAction = document.getElementById("addSheetAction");
       const bookSettingsAction = document.getElementById("bookSettingsAction");
@@ -1476,6 +1675,7 @@
       const selectedCellLabel = document.getElementById("selectedCellLabel");
       const cellBonusBtn = document.getElementById("cellBonusBtn");
       const bookSettingsBtn = document.getElementById("bookSettingsBtn");
+      const sheetHistoryBtn = document.getElementById("sheetHistoryBtn");
 
       const salaryFirstTitle = document.getElementById("salaryFirstTitle");
       const salarySecondTitle = document.getElementById("salarySecondTitle");
@@ -1517,6 +1717,12 @@
       const cancelBonusBtn = document.getElementById("cancelBonusBtn");
       const saveBonusBtn = document.getElementById("saveBonusBtn");
 
+      const sheetHistoryModalBackdrop = document.getElementById("sheetHistoryModalBackdrop");
+      const sheetHistoryDescription = document.getElementById("sheetHistoryDescription");
+      const sheetHistoryActor = document.getElementById("sheetHistoryActor");
+      const sheetHistoryList = document.getElementById("sheetHistoryList");
+      const closeSheetHistoryBtn = document.getElementById("closeSheetHistoryBtn");
+
       const bookSettingsModalBackdrop = document.getElementById("bookSettingsModalBackdrop");
       const dayRateInput = document.getElementById("dayRateInput");
       const nightRateInput = document.getElementById("nightRateInput");
@@ -1535,12 +1741,38 @@
       let deviceViewMode = VIEW_MODE_AUTO;
       let selectedCell = null;
       let editingBookId = "";
+      let menuCloseTimer = null;
+      let authorizedUsers = {};
+      let currentActor = {
+        id: "",
+        name: "Невідомий користувач"
+      };
 
       function resolveApiUrl() {
         const query = new URLSearchParams(window.location.search);
         const queryValue = query.get("api");
         const raw = String(queryValue || window.CHARTS_API_URL || "").trim();
         return raw || "/api/charts/state";
+      }
+
+      function resolveUsersApiUrl(stateApiUrl) {
+        try {
+          const url = new URL(String(stateApiUrl || "/api/charts/state"), window.location.href);
+          if (url.pathname.endsWith("/api/charts/state")) {
+            url.pathname = url.pathname.slice(0, -"/state".length) + "/users";
+            return url.toString();
+          }
+
+          if (url.pathname.endsWith("/state")) {
+            url.pathname = url.pathname.slice(0, -"state".length) + "users";
+            return url.toString();
+          }
+
+          url.pathname = "/api/charts/users";
+          return url.toString();
+        } catch {
+          return "/api/charts/users";
+        }
       }
 
       function extractHost(url) {
@@ -1556,6 +1788,130 @@
           return "Локально збережено. API не може бути на GitHub Pages.";
         }
         return "Локально збережено, сервер недоступний";
+      }
+
+      function normalizeAuthorizedUsers(rawUsers) {
+        if (!rawUsers || typeof rawUsers !== "object") {
+          return {};
+        }
+
+        const normalized = {};
+        const entries = Object.entries(rawUsers);
+        for (let i = 0; i < entries.length; i += 1) {
+          const [rawId, rawUser] = entries[i];
+          const id = String(rawId || "").trim();
+          if (!id) {
+            continue;
+          }
+
+          const user = rawUser && typeof rawUser === "object" ? rawUser : {};
+          normalized[id] = {
+            username: String(user.username || "").trim(),
+            first_name: String(user.first_name || "").trim(),
+            last_name: String(user.last_name || "").trim(),
+            authorized_at: String(user.authorized_at || "").trim()
+          };
+        }
+
+        return normalized;
+      }
+
+      function formatAuthorizedUserName(user, userId) {
+        if (!user || typeof user !== "object") {
+          return "Користувач " + String(userId || "");
+        }
+
+        const firstName = String(user.first_name || "").trim();
+        const lastName = String(user.last_name || "").trim();
+        const username = String(user.username || "").trim();
+
+        const fullName = [firstName, lastName].filter(Boolean).join(" ").trim();
+        if (fullName) {
+          return fullName;
+        }
+
+        if (username) {
+          return "@" + username;
+        }
+
+        return "Користувач " + String(userId || "");
+      }
+
+      function readTelegramUser() {
+        if (!tg || !tg.initDataUnsafe || typeof tg.initDataUnsafe !== "object") {
+          return null;
+        }
+
+        const user = tg.initDataUnsafe.user;
+        return user && typeof user === "object" ? user : null;
+      }
+
+      function deriveCurrentActor(usersMap) {
+        const telegramUser = readTelegramUser();
+        if (telegramUser && telegramUser.id !== undefined && telegramUser.id !== null) {
+          const actorId = String(telegramUser.id);
+          if (usersMap && usersMap[actorId]) {
+            return {
+              id: actorId,
+              name: formatAuthorizedUserName(usersMap[actorId], actorId)
+            };
+          }
+
+          const tgName = [
+            String(telegramUser.first_name || "").trim(),
+            String(telegramUser.last_name || "").trim()
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+
+          if (tgName) {
+            return { id: actorId, name: tgName };
+          }
+
+          const username = String(telegramUser.username || "").trim();
+          if (username) {
+            return { id: actorId, name: "@" + username };
+          }
+
+          return { id: actorId, name: "Користувач " + actorId };
+        }
+
+        return {
+          id: "local",
+          name: "Локальний користувач"
+        };
+      }
+
+      function refreshCurrentActor() {
+        currentActor = deriveCurrentActor(authorizedUsers);
+      }
+
+      async function loadAuthorizedUsersFromServer() {
+        try {
+          const response = await fetch(CHARTS_USERS_API_URL, {
+            method: "GET",
+            headers: {
+              "Accept": "application/json"
+            },
+            cache: "no-store"
+          });
+
+          if (!response.ok) {
+            throw new Error("HTTP " + String(response.status));
+          }
+
+          const payload = await response.json();
+          if (!payload || payload.ok !== true) {
+            throw new Error("Invalid users payload");
+          }
+
+          authorizedUsers = normalizeAuthorizedUsers(payload.users);
+        } catch {
+          authorizedUsers = {};
+        }
+
+        refreshCurrentActor();
       }
 
       function getTemplateValue(ref, fallback) {
@@ -1816,6 +2172,133 @@
         }
 
         return output;
+      }
+
+      function normalizeChangeLogText(rawValue, limit) {
+        return String(rawValue || "")
+          .replace(/\s+/g, " ")
+          .trim()
+          .slice(0, limit);
+      }
+
+      function normalizeChangeLog(rawLog) {
+        if (!Array.isArray(rawLog)) {
+          return [];
+        }
+
+        const output = [];
+        for (let i = 0; i < rawLog.length; i += 1) {
+          const item = rawLog[i];
+          if (!item || typeof item !== "object") {
+            continue;
+          }
+
+          const atRaw = typeof item.at === "string" ? item.at.trim() : "";
+          const atDate = atRaw ? new Date(atRaw) : null;
+          const at = atDate && !Number.isNaN(atDate.getTime()) ? atDate.toISOString() : nowIso();
+
+          const entry = {
+            id:
+              typeof item.id === "string" && item.id.trim()
+                ? item.id.trim()
+                : makeId("change"),
+            at,
+            type: normalizeChangeLogText(item.type || "edit", 40) || "edit",
+            actorId: normalizeChangeLogText(item.actorId || "", 48),
+            actorName: normalizeChangeLogText(item.actorName || "Невідомий користувач", 100) || "Невідомий користувач",
+            bookId: normalizeChangeLogText(item.bookId || "", 80),
+            bookName: normalizeChangeLogText(item.bookName || "", 120),
+            sheetId: normalizeChangeLogText(item.sheetId || "", 80),
+            sheetName: normalizeChangeLogText(item.sheetName || "", 120),
+            cellRef: normalizeChangeLogText(item.cellRef || "", 24),
+            summary: normalizeChangeLogText(item.summary || "", 280),
+            before: normalizeChangeLogText(item.before || "", 160),
+            after: normalizeChangeLogText(item.after || "", 160)
+          };
+
+          if (!entry.bookId || !entry.sheetId || !entry.summary) {
+            continue;
+          }
+
+          output.push(entry);
+        }
+
+        return output.slice(-CHANGE_LOG_LIMIT);
+      }
+
+      function appendSheetChangeLog(change) {
+        const book = activeBook();
+        const sheet = activeSheet();
+        if (!book || !sheet || !change || typeof change !== "object") {
+          return;
+        }
+
+        if (!Array.isArray(state.changeLog)) {
+          state.changeLog = [];
+        }
+
+        const normalized = normalizeChangeLog([
+          {
+            id: makeId("change"),
+            at: nowIso(),
+            type: change.type || "edit",
+            actorId: currentActor.id || "",
+            actorName: currentActor.name || "Невідомий користувач",
+            bookId: book.id,
+            bookName: book.name,
+            sheetId: sheet.id,
+            sheetName: sheet.name,
+            cellRef: change.cellRef || "",
+            summary: change.summary || "",
+            before: change.before || "",
+            after: change.after || ""
+          }
+        ]);
+
+        if (!normalized.length) {
+          return;
+        }
+
+        state.changeLog.push(normalized[0]);
+        state.changeLog = normalizeChangeLog(state.changeLog);
+      }
+
+      function getSheetChangeLogEntries(bookId, sheetId) {
+        if (!Array.isArray(state.changeLog)) {
+          return [];
+        }
+
+        return state.changeLog
+          .filter((item) => item && item.bookId === bookId && item.sheetId === sheetId)
+          .sort((a, b) => String(b.at).localeCompare(String(a.at)));
+      }
+
+      function formatChangeDateTime(isoString) {
+        const parsed = new Date(String(isoString || ""));
+        if (Number.isNaN(parsed.getTime())) {
+          return "";
+        }
+
+        return parsed.toLocaleString("uk-UA", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
+        });
+      }
+
+      function formatBonusForLog(bonusValue) {
+        const bonus = bonusValue && typeof bonusValue === "object" ? bonusValue : null;
+        const multiplier = bonus ? parseNumber(bonus.multiplier, 1) : 1;
+        const premium = bonus ? parseNumber(bonus.premium, 0) : 0;
+        const advance = bonus ? parseNumber(bonus.advance, 0) : 0;
+        return (
+          "x" + formatCompactNumber(multiplier) +
+          ", премія " + formatCompactNumber(premium) +
+          ", аванс " + formatCompactNumber(advance)
+        );
       }
 
       function parseRef(ref) {
@@ -2107,6 +2590,85 @@
 
           bonusHistoryList.appendChild(rowNode);
         }
+      }
+
+      function renderSheetHistoryList() {
+        if (!sheetHistoryList || !sheetHistoryDescription || !sheetHistoryActor) {
+          return;
+        }
+
+        const book = activeBook();
+        const sheet = activeSheet();
+        sheetHistoryList.innerHTML = "";
+
+        sheetHistoryActor.textContent = "Поточний користувач: " + (currentActor.name || "Невідомий користувач");
+
+        if (!book || !sheet) {
+          sheetHistoryDescription.textContent = "Немає активного листа/аркуша.";
+          const emptyNode = document.createElement("p");
+          emptyNode.className = "sheet-history-empty";
+          emptyNode.textContent = "Історія недоступна.";
+          sheetHistoryList.appendChild(emptyNode);
+          return;
+        }
+
+        const entries = getSheetChangeLogEntries(book.id, sheet.id);
+        sheetHistoryDescription.textContent =
+          "Показано " + String(entries.length) + " змін для аркуша \"" + sheet.name + "\" (лист: " + book.name + ").";
+
+        if (!entries.length) {
+          const emptyNode = document.createElement("p");
+          emptyNode.className = "sheet-history-empty";
+          emptyNode.textContent = "Поки що змін для цього аркуша немає.";
+          sheetHistoryList.appendChild(emptyNode);
+          return;
+        }
+
+        for (let i = 0; i < entries.length; i += 1) {
+          const entry = entries[i];
+          const rowNode = document.createElement("div");
+          rowNode.className = "sheet-history-item";
+
+          const top = document.createElement("div");
+          top.className = "sheet-history-top";
+
+          const actorNode = document.createElement("span");
+          actorNode.className = "sheet-history-actor-chip";
+          actorNode.textContent = entry.actorName || "Невідомий користувач";
+
+          const dateNode = document.createElement("span");
+          dateNode.textContent = formatChangeDateTime(entry.at);
+
+          top.appendChild(actorNode);
+          top.appendChild(dateNode);
+
+          const summaryNode = document.createElement("div");
+          summaryNode.className = "sheet-history-summary";
+          summaryNode.textContent = entry.summary;
+
+          rowNode.appendChild(top);
+          rowNode.appendChild(summaryNode);
+
+          if (entry.before || entry.after) {
+            const detailNode = document.createElement("div");
+            detailNode.className = "sheet-history-before-after";
+            detailNode.textContent =
+              "Було: " + (entry.before || "—") +
+              " | Стало: " + (entry.after || "—");
+            rowNode.appendChild(detailNode);
+          }
+
+          sheetHistoryList.appendChild(rowNode);
+        }
+      }
+
+      function openSheetHistoryModal() {
+        renderSheetHistoryList();
+        sheetHistoryModalBackdrop.classList.remove("hidden");
+      }
+
+      function closeSheetHistoryModal() {
+        sheetHistoryModalBackdrop.classList.add("hidden");
       }
 
       function buildEmployeeRowSet(book) {
@@ -2608,10 +3170,11 @@
         ];
 
         return {
-          version: 2,
+          version: 3,
           activeBookId: books[0].id,
           activeSheetId: books[0].sheets[0].id,
-          books
+          books,
+          changeLog: []
         };
       }
 
@@ -2719,11 +3282,14 @@
           activeSheetId = activeBook.sheets[0].id;
         }
 
+        const changeLog = normalizeChangeLog(rawState.changeLog);
+
         return {
-          version: 2,
+          version: 3,
           activeBookId,
           activeSheetId,
-          books
+          books,
+          changeLog
         };
       }
 
@@ -2799,10 +3365,11 @@
         }
 
         return {
-          version: 2,
+          version: 3,
           activeBookId: books[0].id,
           activeSheetId: books[0].sheets[0].id,
-          books
+          books,
+          changeLog: []
         };
       }
 
@@ -2828,6 +3395,7 @@
       }
 
       let state = loadLocalState();
+      refreshCurrentActor();
 
       function setSavedStatus(message) {
         saveBadge.textContent = message;
@@ -2946,6 +3514,8 @@
 
       async function initializeState() {
         setSavedStatus("Завантаження з сервера...");
+
+        await loadAuthorizedUsersFromServer();
 
         try {
           const payload = await fetchServerState();
@@ -3365,16 +3935,23 @@
           }
 
           const tr = document.createElement("tr");
+          tr.className = "employee-row";
+
+          const premiumClass = "number metric-premium" + (row.premium > 0 ? " positive" : "");
+          const advanceClass = "number metric-advance" + (row.advance > 0 ? " negative" : "");
+          const totalClass =
+            "number metric-total" + (row.total > 0 ? " positive" : row.total < 0 ? " negative" : "");
+
           tr.innerHTML =
             "<td>" + row.department + "</td>" +
             "<td>" + row.employee + "</td>" +
-            '<td class="number">' + formatMoney(row.dayCount) + "</td>" +
-            '<td class="number">' + formatMoney(row.nightCount) + "</td>" +
-            '<td class="number">' + formatMoney(row.hours) + "</td>" +
-            '<td class="number">' + formatMoney(row.basePay) + "</td>" +
-            '<td class="number">' + formatMoney(row.premium) + "</td>" +
-            '<td class="number">' + formatMoney(row.advance) + "</td>" +
-            '<td class="number">' + formatMoney(row.total) + "</td>";
+            '<td class="number metric-day">' + formatMoney(row.dayCount) + "</td>" +
+            '<td class="number metric-night">' + formatMoney(row.nightCount) + "</td>" +
+            '<td class="number metric-hours">' + formatMoney(row.hours) + "</td>" +
+            '<td class="number metric-base">' + formatMoney(row.basePay) + "</td>" +
+            '<td class="' + premiumClass + '">' + formatMoney(row.premium) + "</td>" +
+            '<td class="' + advanceClass + '">' + formatMoney(row.advance) + "</td>" +
+            '<td class="' + totalClass + '">' + formatMoney(row.total) + "</td>";
           tbody.appendChild(tr);
         }
       }
@@ -3390,6 +3967,8 @@
           salarySecondBody.innerHTML = "";
           salaryFirstTotal.textContent = "-";
           salarySecondTotal.textContent = "-";
+          salaryFirstTotal.classList.remove("is-positive", "is-negative");
+          salarySecondTotal.classList.remove("is-positive", "is-negative");
           return;
         }
 
@@ -3408,6 +3987,8 @@
           " (База " + formatMoney(firstData.grandBase) +
           ", Премія " + formatMoney(firstData.grandPremium) +
           ", Аванс " + formatMoney(firstData.grandAdvance) + ")";
+        salaryFirstTotal.classList.toggle("is-positive", firstData.grandTotal > 0);
+        salaryFirstTotal.classList.toggle("is-negative", firstData.grandTotal < 0);
 
         salarySecondTotal.textContent =
           "Підсумок: " +
@@ -3415,6 +3996,8 @@
           " (База " + formatMoney(secondData.grandBase) +
           ", Премія " + formatMoney(secondData.grandPremium) +
           ", Аванс " + formatMoney(secondData.grandAdvance) + ")";
+        salarySecondTotal.classList.toggle("is-positive", secondData.grandTotal > 0);
+        salarySecondTotal.classList.toggle("is-negative", secondData.grandTotal < 0);
       }
 
       function buildSalaryExportPayload(periodKey) {
@@ -3667,6 +4250,10 @@
 
         const employeeRows = buildEmployeeRowSet(book);
         let changed = false;
+        let changedCount = 0;
+        let clearedCount = 0;
+        let firstChangedRef = "";
+
         for (let r = 0; r < rows.length; r += 1) {
           const cols = rows[r];
           for (let c = 0; c < cols.length; c += 1) {
@@ -3684,25 +4271,43 @@
 
             const key = String(rowIndex) + ":" + String(colIndex);
             const value = normalizeIncomingCellValue(sheet, employeeRows, row, col, cols[c] || "");
+            const previous = Object.prototype.hasOwnProperty.call(sheet.cells, key) ? String(sheet.cells[key]) : "";
 
-            if (value === "") {
-              if (Object.prototype.hasOwnProperty.call(sheet.cells, key)) {
-                delete sheet.cells[key];
-                changed = true;
-              }
+            if (value === previous) {
               continue;
             }
 
-            if (sheet.cells[key] !== value) {
-              sheet.cells[key] = value;
-              changed = true;
+            if (!firstChangedRef) {
+              firstChangedRef = toRef(row, col);
             }
+
+            if (value === "") {
+              delete sheet.cells[key];
+              changed = true;
+              changedCount += 1;
+              clearedCount += 1;
+              continue;
+            }
+
+            sheet.cells[key] = value;
+            changed = true;
+            changedCount += 1;
           }
         }
 
         if (!changed) {
           return false;
         }
+
+        appendSheetChangeLog({
+          type: "paste_block",
+          cellRef: firstChangedRef,
+          summary:
+            "Вставлено блок: змінено " + String(changedCount) +
+            " клітинок (очищено " + String(clearedCount) + ").",
+          before: "",
+          after: "Клітинок оновлено: " + String(changedCount)
+        });
 
         applyDerivedData(sheet);
         sheet.updatedAt = nowIso();
@@ -3864,6 +4469,10 @@
         renderGridValues();
         renderSalaryPanels();
         updateSelectedCellLabel();
+
+        if (sheetHistoryModalBackdrop && !sheetHistoryModalBackdrop.classList.contains("hidden")) {
+          renderSheetHistoryList();
+        }
       }
 
       function switchToBook(bookId) {
@@ -3896,12 +4505,42 @@
         persistStateDebounced();
       }
 
+      function openMenu() {
+        if (menuCloseTimer) {
+          clearTimeout(menuCloseTimer);
+          menuCloseTimer = null;
+        }
+
+        menuPanel.classList.remove("hidden");
+        menuBackdrop.classList.remove("hidden");
+
+        requestAnimationFrame(() => {
+          menuPanel.classList.add("open");
+          menuBackdrop.classList.add("visible");
+        });
+      }
+
       function closeMenu() {
-        menuPanel.classList.add("hidden");
+        menuPanel.classList.remove("open");
+        menuBackdrop.classList.remove("visible");
+
+        if (menuCloseTimer) {
+          clearTimeout(menuCloseTimer);
+        }
+
+        menuCloseTimer = setTimeout(() => {
+          menuPanel.classList.add("hidden");
+          menuBackdrop.classList.add("hidden");
+          menuCloseTimer = null;
+        }, 180);
       }
 
       function toggleMenu() {
-        menuPanel.classList.toggle("hidden");
+        if (menuPanel.classList.contains("hidden")) {
+          openMenu();
+          return;
+        }
+        closeMenu();
       }
 
       function openNameModal(mode) {
@@ -4027,6 +4666,7 @@
 
         const row = selectedCell.rowIndex + 1;
         const col = selectedCell.colIndex + 1;
+        const currentBonus = getCellBonus(sheet, row, col);
         setCellBonus(sheet, row, col, { multiplier, premium, advance });
         appendCellBonusHistory(sheet, row, col, {
           at: nowIso(),
@@ -4036,6 +4676,19 @@
           advance,
           comment
         });
+
+        const cellRef = toRef(row, col);
+        appendSheetChangeLog({
+          type: "bonus_save",
+          cellRef,
+          summary:
+            (currentBonus ? "Оновлено бонус/штраф" : "Додано бонус/штраф") +
+            " у клітинці " + cellRef +
+            (comment ? " (коментар: " + comment + ")" : ""),
+          before: currentBonus ? formatBonusForLog(currentBonus) : "немає",
+          after: formatBonusForLog({ multiplier, premium, advance })
+        });
+
         sheet.updatedAt = nowIso();
 
         closeBonusModal();
@@ -4063,6 +4716,17 @@
           premium: currentBonus ? parseNumber(currentBonus.premium, 0) : 0,
           advance: currentBonus ? parseNumber(currentBonus.advance, 0) : 0,
           comment: comment || "Очищено"
+        });
+
+        const cellRef = toRef(row, col);
+        appendSheetChangeLog({
+          type: "bonus_clear",
+          cellRef,
+          summary:
+            "Очищено бонус/штраф у клітинці " + cellRef +
+            (comment ? " (коментар: " + comment + ")" : ""),
+          before: currentBonus ? formatBonusForLog(currentBonus) : "немає",
+          after: "очищено"
         });
 
         setCellBonus(sheet, row, col, null);
@@ -4434,11 +5098,37 @@
           target.value = value;
         }
 
+        const previousValue = Object.prototype.hasOwnProperty.call(sheet.cells, key)
+          ? String(sheet.cells[key])
+          : "";
+
+        if (value === previousValue) {
+          return;
+        }
+
         if (value === "") {
           delete sheet.cells[key];
         } else {
           sheet.cells[key] = value;
         }
+
+        const cellRef = toRef(row, col);
+        const shiftCell = isShiftEntryCell(sheet, employeeRows, row, col);
+        const actionLabel = shiftCell ? "зміну" : "значення";
+        const summary =
+          value === ""
+            ? "Прибрано " + actionLabel + " у клітинці " + cellRef
+            : previousValue === ""
+              ? "Додано " + actionLabel + " у клітинці " + cellRef
+              : "Змінено " + actionLabel + " у клітинці " + cellRef;
+
+        appendSheetChangeLog({
+          type: shiftCell ? "shift_cell" : "cell_update",
+          cellRef,
+          summary,
+          before: previousValue,
+          after: value
+        });
 
         applyDerivedData(sheet);
         sheet.updatedAt = nowIso();
@@ -4449,6 +5139,14 @@
 
       menuToggle.addEventListener("click", () => {
         toggleMenu();
+      });
+
+      menuCloseBtn.addEventListener("click", () => {
+        closeMenu();
+      });
+
+      menuBackdrop.addEventListener("click", () => {
+        closeMenu();
       });
 
       addBookAction.addEventListener("click", () => {
@@ -4484,15 +5182,6 @@
       deleteSheetAction.addEventListener("click", () => {
         closeMenu();
         deleteActiveSheet();
-      });
-
-      document.addEventListener("click", (event) => {
-        if (!menuPanel.classList.contains("hidden")) {
-          const inside = menuPanel.contains(event.target) || menuToggle.contains(event.target);
-          if (!inside) {
-            closeMenu();
-          }
-        }
       });
 
       cancelNameBtn.addEventListener("click", () => {
@@ -4548,6 +5237,20 @@
 
       bookSettingsBtn.addEventListener("click", () => {
         openBookSettingsModal();
+      });
+
+      sheetHistoryBtn.addEventListener("click", () => {
+        openSheetHistoryModal();
+      });
+
+      closeSheetHistoryBtn.addEventListener("click", () => {
+        closeSheetHistoryModal();
+      });
+
+      sheetHistoryModalBackdrop.addEventListener("click", (event) => {
+        if (event.target === sheetHistoryModalBackdrop) {
+          closeSheetHistoryModal();
+        }
       });
 
       addDepartmentBtn.addEventListener("click", () => {
@@ -4631,6 +5334,7 @@
           closeNameModal();
           closePasteModal();
           closeBonusModal();
+          closeSheetHistoryModal();
           closeBookSettingsModal();
         }
       });
