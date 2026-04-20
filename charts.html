@@ -186,6 +186,10 @@
       padding: 8px;
       display: grid;
       gap: 6px;
+      max-height: min(62vh, 420px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
       animation: pop-in 140ms ease-out;
     }
 
@@ -969,6 +973,10 @@
       .sidebar {
         position: static;
         max-height: none;
+      }
+
+      .menu-panel {
+        max-height: calc(100vh - 150px);
       }
 
       .book-list {
