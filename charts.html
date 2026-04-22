@@ -1489,7 +1489,7 @@
   <div id="bookSettingsModalBackdrop" class="modal-backdrop hidden">
     <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="bookSettingsTitle">
       <h3 id="bookSettingsTitle">Налаштування Листа</h3>
-      <p>Ставки і склад департаментів. Ці працівники автоматично підставляються у нові аркуші листа.</p>
+      <p>Ставки, тривалість змін і склад департаментів. Ці працівники автоматично підставляються у нові аркуші листа.</p>
 
       <div class="settings-grid">
         <div class="field">
@@ -1497,8 +1497,24 @@
           <input id="dayRateInput" type="number" inputmode="decimal" min="0" step="1" placeholder="1600">
         </div>
         <div class="field">
+          <label for="eveningRateInput">Оплата за вечірню зміну</label>
+          <input id="eveningRateInput" type="number" inputmode="decimal" min="0" step="1" placeholder="1600">
+        </div>
+        <div class="field">
           <label for="nightRateInput">Оплата за нічну зміну</label>
           <input id="nightRateInput" type="number" inputmode="decimal" min="0" step="1" placeholder="1600">
+        </div>
+        <div class="field">
+          <label for="dayHoursInput">Тривалість денної зміни (год)</label>
+          <input id="dayHoursInput" type="number" inputmode="decimal" min="1" step="0.5" placeholder="12">
+        </div>
+        <div class="field">
+          <label for="eveningHoursInput">Тривалість вечірньої зміни (год)</label>
+          <input id="eveningHoursInput" type="number" inputmode="decimal" min="1" step="0.5" placeholder="12">
+        </div>
+        <div class="field">
+          <label for="nightHoursInput">Тривалість нічної зміни (год)</label>
+          <input id="nightHoursInput" type="number" inputmode="decimal" min="1" step="0.5" placeholder="12">
         </div>
       </div>
 
@@ -1538,6 +1554,7 @@
       const VIEW_MODE_MOBILE = "mobile";
       const CHARTS_EXPORT_PAYLOAD_TYPE = "charts_salary_export";
       const DEFAULT_DAY_SHIFT_HOURS = 12;
+      const DEFAULT_EVENING_SHIFT_HOURS = 12;
       const DEFAULT_NIGHT_SHIFT_HOURS = 12;
       const BONUS_HISTORY_LIMIT = 40;
       const CHANGE_LOG_LIMIT = 360;
@@ -1725,7 +1742,11 @@
 
       const bookSettingsModalBackdrop = document.getElementById("bookSettingsModalBackdrop");
       const dayRateInput = document.getElementById("dayRateInput");
+      const eveningRateInput = document.getElementById("eveningRateInput");
       const nightRateInput = document.getElementById("nightRateInput");
+      const dayHoursInput = document.getElementById("dayHoursInput");
+      const eveningHoursInput = document.getElementById("eveningHoursInput");
+      const nightHoursInput = document.getElementById("nightHoursInput");
       const departmentsList = document.getElementById("departmentsList");
       const addDepartmentBtn = document.getElementById("addDepartmentBtn");
       const cancelBookSettingsBtn = document.getElementById("cancelBookSettingsBtn");
@@ -1972,8 +1993,10 @@
         return {
           rates: {
             dayShift: 1600,
+            eveningShift: 1600,
             nightShift: 1600,
             dayHours: DEFAULT_DAY_SHIFT_HOURS,
+            eveningHours: DEFAULT_EVENING_SHIFT_HOURS,
             nightHours: DEFAULT_NIGHT_SHIFT_HOURS
           },
           departments: DEFAULT_BOOK_DEPARTMENTS.map((item) => ({
@@ -1991,11 +2014,13 @@
       function normalizeRates(rawRates) {
         const defaults = buildDefaultSettings().rates;
         const dayShift = Math.max(0, parseNumber(rawRates && rawRates.dayShift, defaults.dayShift));
+        const eveningShift = Math.max(0, parseNumber(rawRates && rawRates.eveningShift, dayShift));
         const nightShift = Math.max(0, parseNumber(rawRates && rawRates.nightShift, defaults.nightShift));
         const dayHours = Math.max(1, parseNumber(rawRates && rawRates.dayHours, defaults.dayHours));
+        const eveningHours = Math.max(1, parseNumber(rawRates && rawRates.eveningHours, dayHours));
         const nightHours = Math.max(1, parseNumber(rawRates && rawRates.nightHours, defaults.nightHours));
 
-        return { dayShift, nightShift, dayHours, nightHours };
+        return { dayShift, eveningShift, nightShift, dayHours, eveningHours, nightHours };
       }
 
       function normalizeBookSettings(rawSettings) {
@@ -2729,6 +2754,9 @@
         if (token === "н" || token === "n") {
           return "н";
         }
+        if (token === "в" || token === "v") {
+          return "в";
+        }
         if (token === "д/н" || token === "н/д" || token === "d/n" || token === "n/d") {
           return "д/н";
         }
@@ -2742,9 +2770,30 @@
           return "с2";
         }
 
-        const shiftWithModifier = /^([дdнn])([+-]\d+(?:\.\d+)?)$/.exec(token);
+        const internshipMatch = /^(ст|st)(\d+(?:\.\d+)?)?$/.exec(token);
+        if (internshipMatch) {
+          const internshipHoursToken = internshipMatch[2];
+          if (!internshipHoursToken) {
+            return "ст";
+          }
+
+          const internshipHours = parseNumber(internshipHoursToken, NaN);
+          if (!Number.isFinite(internshipHours) || internshipHours <= 0) {
+            return "ст";
+          }
+
+          return "ст " + formatCompactNumber(internshipHours);
+        }
+
+        const shiftWithModifier = /^([дdнnвv])([+-]\d+(?:\.\d+)?)$/.exec(token);
         if (shiftWithModifier) {
-          const marker = shiftWithModifier[1] === "д" || shiftWithModifier[1] === "d" ? "д" : "н";
+          let marker = "н";
+          if (shiftWithModifier[1] === "д" || shiftWithModifier[1] === "d") {
+            marker = "д";
+          }
+          if (shiftWithModifier[1] === "в" || shiftWithModifier[1] === "v") {
+            marker = "в";
+          }
           const modifierValue = parseNumber(shiftWithModifier[2], NaN);
           if (!Number.isFinite(modifierValue)) {
             return source;
@@ -2776,45 +2825,58 @@
         return trimmed;
       }
 
-      function tokenMatchesSummaryValue(normalizedToken, acceptedToken) {
+      function getSummaryTokenWeight(normalizedToken, acceptedToken) {
         const accepted = normalizeShiftToken(acceptedToken);
-        if (!accepted) {
-          return false;
+        if (!accepted || !normalizedToken) {
+          return 0;
         }
 
         if (normalizedToken === accepted) {
-          return true;
+          if (accepted === "ст" || accepted === "st") {
+            return 0.5;
+          }
+          return 1;
         }
+
+        const isInternshipToken = /^(ст|st)(\d+(?:\.\d+)?)?$/.test(normalizedToken);
+        const isEveningToken =
+          normalizedToken === "в" || normalizedToken === "v" || /^(в|v)[+-]\d+(?:\.\d+)?$/.test(normalizedToken);
 
         if (accepted === "д" || accepted === "d") {
           if (/^(д|d)[+-]\d+(?:\.\d+)?$/.test(normalizedToken)) {
-            return true;
+            return 1;
+          }
+          if (isEveningToken) {
+            return 1;
+          }
+          if (isInternshipToken) {
+            return 0.5;
           }
           if (normalizedToken === "д/н" || normalizedToken === "н/д") {
-            return true;
+            return 1;
           }
         }
 
         if (accepted === "н" || accepted === "n") {
           if (/^(н|n)[+-]\d+(?:\.\d+)?$/.test(normalizedToken)) {
-            return true;
+            return 1;
           }
           if (normalizedToken === "д/н" || normalizedToken === "н/д") {
-            return true;
+            return 1;
           }
         }
 
         if (accepted === "с" && normalizedToken === "c") {
-          return true;
+          return 1;
         }
         if (accepted === "с1" && normalizedToken === "c1") {
-          return true;
+          return 1;
         }
         if (accepted === "с2" && normalizedToken === "c2") {
-          return true;
+          return 1;
         }
 
-        return false;
+        return 0;
       }
 
       function countTokensInRange(sheet, row, startCol, endCol, acceptedTokens) {
@@ -2827,12 +2889,14 @@
 
         for (let col = startCol; col <= endCol; col += 1) {
           const normalized = normalizeShiftToken(getCellValue(sheet, row, col));
-          if (accepted.some((token) => tokenMatchesSummaryValue(normalized, token))) {
-            total += 1;
+          let tokenWeight = 0;
+          for (let i = 0; i < accepted.length; i += 1) {
+            tokenWeight = Math.max(tokenWeight, getSummaryTokenWeight(normalized, accepted[i]));
           }
+          total += tokenWeight;
         }
 
-        return total;
+        return round2(total);
       }
 
       function registerFormulaCell(sheet, row, col) {
@@ -3647,10 +3711,58 @@
         return Boolean(sheet.formulaCells[toCellKey(row, col)]);
       }
 
+      function rowHasVisualData(sheet, targetRow) {
+        if (!sheet) {
+          return false;
+        }
+
+        const summaryStartCol = getSummaryStartCol(sheet);
+        for (let col = 1; col <= SHEET_COLS; col += 1) {
+          const value = String(getCellValue(sheet, targetRow, col) || "").trim();
+          if (!value) {
+            continue;
+          }
+
+          if (col >= summaryStartCol && isFormulaCell(sheet, targetRow, col)) {
+            const numeric = parseNumber(value, NaN);
+            if (Number.isFinite(numeric) && Math.abs(numeric) < 0.0001) {
+              continue;
+            }
+          }
+
+          return true;
+        }
+
+        if (sheet.cellBonuses && typeof sheet.cellBonuses === "object") {
+          const bonusEntries = Object.entries(sheet.cellBonuses);
+          for (let i = 0; i < bonusEntries.length; i += 1) {
+            const bonusKey = bonusEntries[i][0];
+            const rowMatch = /^(\d+):\d+$/.exec(String(bonusKey));
+            if (!rowMatch) {
+              continue;
+            }
+
+            if (Number(rowMatch[1]) + 1 === targetRow) {
+              return true;
+            }
+          }
+        }
+
+        return false;
+      }
+
       function getCellBackgroundColor(sheet, row, col) {
         const base = SECTION_ROW_STYLES[row] || null;
+        if (!base) {
+          return null;
+        }
+
         if (!sheet) {
           return base;
+        }
+
+        if (!rowHasVisualData(sheet, row)) {
+          return null;
         }
 
         const summaryStartCol = getSummaryStartCol(sheet);
@@ -3767,14 +3879,37 @@
         }
 
         const dayRate = Math.max(0, parseNumber(rates.dayShift, 0));
+        const eveningRate = Math.max(0, parseNumber(rates.eveningShift, dayRate));
         const nightRate = Math.max(0, parseNumber(rates.nightShift, 0));
         const dayHours = Math.max(1, parseNumber(rates.dayHours, DEFAULT_DAY_SHIFT_HOURS));
+        const eveningHours = Math.max(1, parseNumber(rates.eveningHours, dayHours));
         const nightHours = Math.max(1, parseNumber(rates.nightHours, DEFAULT_NIGHT_SHIFT_HOURS));
+        const dayHourlyRate = dayRate / dayHours;
+
+        const internshipMatch = /^(ст|st)(\d+(?:\.\d+)?)?$/.exec(token);
+        if (internshipMatch) {
+          const rawInternshipHours = internshipMatch[2];
+          const internshipHours = rawInternshipHours ? parseNumber(rawInternshipHours, NaN) : dayHours;
+          if (!Number.isFinite(internshipHours)) {
+            return null;
+          }
+
+          const normalizedInternshipHours = Math.max(0, internshipHours);
+          const dayShiftEquivalent = round2((normalizedInternshipHours / dayHours) * 0.5);
+          return {
+            dayCount: dayShiftEquivalent,
+            eveningCount: 0,
+            nightCount: 0,
+            hours: round2(normalizedInternshipHours),
+            basePay: round2(normalizedInternshipHours * dayHourlyRate * 0.5)
+          };
+        }
 
         if (/^[+-]?\d+(?:\.\d+)?$/.test(token)) {
           const hours = Math.max(0, parseNumber(token, 0));
           return {
             dayCount: 0,
+            eveningCount: 0,
             nightCount: 0,
             hours,
             basePay: round2(hours * (dayRate / dayHours))
@@ -3784,6 +3919,7 @@
         if (token === "д/н" || token === "н/д") {
           return {
             dayCount: 1,
+            eveningCount: 0,
             nightCount: 1,
             hours: dayHours + nightHours,
             basePay: round2(dayRate + nightRate)
@@ -3793,29 +3929,32 @@
         if (token === "с" || token === "с1" || token === "с2" || token === "c" || token === "c1" || token === "c2") {
           return {
             dayCount: 1,
+            eveningCount: 0,
             nightCount: 0,
             hours: dayHours,
             basePay: round2(dayRate)
           };
         }
 
-        const match = /^([дdnнn])([+-]\d+(?:\.\d+)?)?$/.exec(token);
+        const match = /^([дdнnвv])([+-]\d+(?:\.\d+)?)?$/.exec(token);
         if (!match) {
           return null;
         }
 
         const marker = match[1];
         const modifier = parseNumber(match[2], 0);
-        const isDayShift = marker === "д" || marker === "d";
-        const shiftHours = isDayShift ? dayHours : nightHours;
-        const shiftRate = isDayShift ? dayRate : nightRate;
+        const isNightShift = marker === "н" || marker === "n";
+        const isEveningShift = marker === "в" || marker === "v";
+        const shiftHours = isNightShift ? nightHours : isEveningShift ? eveningHours : dayHours;
+        const shiftRate = isNightShift ? nightRate : isEveningShift ? eveningRate : dayRate;
         const hourlyRate = shiftRate / shiftHours;
         const effectiveHours = Math.max(0, shiftHours + modifier);
         const effectivePay = Math.max(0, shiftRate + modifier * hourlyRate);
 
         return {
-          dayCount: isDayShift ? 1 : 0,
-          nightCount: isDayShift ? 0 : 1,
+          dayCount: isNightShift || isEveningShift ? 0 : 1,
+          eveningCount: isEveningShift ? 1 : 0,
+          nightCount: isNightShift ? 1 : 0,
           hours: round2(effectiveHours),
           basePay: round2(effectivePay)
         };
@@ -3849,6 +3988,7 @@
               department: department.name,
               employee: employee.name,
               dayCount: 0,
+              eveningCount: 0,
               nightCount: 0,
               hours: 0,
               basePay: 0,
@@ -3866,6 +4006,7 @@
 
               if (entry) {
                 rowData.dayCount += entry.dayCount;
+                rowData.eveningCount += entry.eveningCount;
                 rowData.nightCount += entry.nightCount;
                 rowData.hours += entry.hours;
                 rowData.basePay += entry.basePay * multiplier;
@@ -3885,6 +4026,7 @@
             }
 
             rowData.hours = round2(rowData.hours);
+            rowData.eveningCount = round2(rowData.eveningCount);
             rowData.basePay = round2(rowData.basePay);
             rowData.premium = round2(rowData.premium);
             rowData.advance = round2(rowData.advance);
@@ -3908,12 +4050,48 @@
         };
       }
 
-      function renderSalaryTableRows(tbody, data) {
+      function getSalaryVisibleColumns(data) {
+        const rows = data && Array.isArray(data.rows) ? data.rows : [];
+        const showEvening = rows.some((row) => Math.abs(parseNumber(row.eveningCount, 0)) > 0.0001);
+        const showNight = rows.some((row) => Math.abs(parseNumber(row.nightCount, 0)) > 0.0001);
+
+        return { showEvening, showNight };
+      }
+
+      function getSalaryTableColumnCount(visibleColumns) {
+        return 8 + (visibleColumns.showEvening ? 1 : 0) + (visibleColumns.showNight ? 1 : 0);
+      }
+
+      function renderSalaryTableHeader(tbody, visibleColumns) {
+        const table = tbody && typeof tbody.closest === "function" ? tbody.closest("table") : null;
+        if (!table) {
+          return;
+        }
+
+        const headRow = table.querySelector("thead tr");
+        if (!headRow) {
+          return;
+        }
+
+        let html = "<th>Департамент</th><th>Працівник</th><th>Д</th>";
+        if (visibleColumns.showEvening) {
+          html += "<th>В</th>";
+        }
+        if (visibleColumns.showNight) {
+          html += "<th>Н</th>";
+        }
+        html += "<th>Год</th><th>База</th><th>Премія</th><th>Аванс</th><th>Разом</th>";
+        headRow.innerHTML = html;
+      }
+
+      function renderSalaryTableRows(tbody, data, visibleColumns) {
         tbody.innerHTML = "";
+        const columnCount = getSalaryTableColumnCount(visibleColumns);
+
         if (!data.rows.length) {
           const emptyRow = document.createElement("tr");
           const emptyCell = document.createElement("td");
-          emptyCell.colSpan = 9;
+          emptyCell.colSpan = columnCount;
           emptyCell.textContent = "Немає працівників у налаштуваннях листа.";
           emptyRow.appendChild(emptyCell);
           tbody.appendChild(emptyRow);
@@ -3928,7 +4106,7 @@
             const deptRow = document.createElement("tr");
             deptRow.className = "dept-row";
             const deptCell = document.createElement("td");
-            deptCell.colSpan = 9;
+            deptCell.colSpan = columnCount;
             deptCell.textContent = currentDepartment;
             deptRow.appendChild(deptCell);
             tbody.appendChild(deptRow);
@@ -3946,7 +4124,12 @@
             "<td>" + row.department + "</td>" +
             "<td>" + row.employee + "</td>" +
             '<td class="number metric-day">' + formatMoney(row.dayCount) + "</td>" +
-            '<td class="number metric-night">' + formatMoney(row.nightCount) + "</td>" +
+            (visibleColumns.showEvening
+              ? '<td class="number metric-evening">' + formatMoney(row.eveningCount) + "</td>"
+              : "") +
+            (visibleColumns.showNight
+              ? '<td class="number metric-night">' + formatMoney(row.nightCount) + "</td>"
+              : "") +
             '<td class="number metric-hours">' + formatMoney(row.hours) + "</td>" +
             '<td class="number metric-base">' + formatMoney(row.basePay) + "</td>" +
             '<td class="' + premiumClass + '">' + formatMoney(row.premium) + "</td>" +
@@ -3961,6 +4144,9 @@
         const book = activeBook();
 
         if (!sheet || !book) {
+          const fullColumns = { showEvening: true, showNight: true };
+          renderSalaryTableHeader(salaryFirstBody, fullColumns);
+          renderSalaryTableHeader(salarySecondBody, fullColumns);
           salaryFirstTitle.textContent = "1-15";
           salarySecondTitle.textContent = "16-кінець";
           salaryFirstBody.innerHTML = "";
@@ -3974,12 +4160,16 @@
 
         const firstData = calculateSalaryPeriod(sheet, book, "first");
         const secondData = calculateSalaryPeriod(sheet, book, "second");
+        const firstColumns = getSalaryVisibleColumns(firstData);
+        const secondColumns = getSalaryVisibleColumns(secondData);
 
         salaryFirstTitle.textContent = sheet.name + " | " + firstData.periodLabel;
         salarySecondTitle.textContent = sheet.name + " | " + secondData.periodLabel;
 
-        renderSalaryTableRows(salaryFirstBody, firstData);
-        renderSalaryTableRows(salarySecondBody, secondData);
+        renderSalaryTableHeader(salaryFirstBody, firstColumns);
+        renderSalaryTableHeader(salarySecondBody, secondColumns);
+        renderSalaryTableRows(salaryFirstBody, firstData, firstColumns);
+        renderSalaryTableRows(salarySecondBody, secondData, secondColumns);
 
         salaryFirstTotal.textContent =
           "Підсумок: " +
@@ -4008,6 +4198,7 @@
         }
 
         const data = calculateSalaryPeriod(sheet, book, periodKey);
+        const visibleColumns = getSalaryVisibleColumns(data);
         const payload = {
           type: CHARTS_EXPORT_PAYLOAD_TYPE,
           book_name: book.name,
@@ -4015,10 +4206,13 @@
           period_label: data.periodLabel,
           generated_at: nowIso(),
           total: data.grandTotal,
+          include_evening_count: visibleColumns.showEvening,
+          include_night_count: visibleColumns.showNight,
           rows: data.rows.map((row) => ({
             department: row.department,
             employee: row.employee,
             day_count: row.dayCount,
+            evening_count: row.eveningCount,
             night_count: row.nightCount,
             hours: row.hours,
             base_pay: row.basePay,
@@ -4033,6 +4227,7 @@
           payload.rows = payload.rows.filter(
             (row) =>
               row.day_count !== 0 ||
+              row.evening_count !== 0 ||
               row.night_count !== 0 ||
               row.hours !== 0 ||
               row.base_pay !== 0 ||
@@ -4783,7 +4978,11 @@
         editingBookId = book.id;
 
         dayRateInput.value = String(settings.rates.dayShift);
+        eveningRateInput.value = String(settings.rates.eveningShift);
         nightRateInput.value = String(settings.rates.nightShift);
+        dayHoursInput.value = formatCompactNumber(settings.rates.dayHours);
+        eveningHoursInput.value = formatCompactNumber(settings.rates.eveningHours);
+        nightHoursInput.value = formatCompactNumber(settings.rates.nightHours);
         departmentsList.innerHTML = "";
 
         for (let i = 0; i < settings.departments.length; i += 1) {
@@ -4809,9 +5008,32 @@
         }
 
         const dayShift = parseNumber(dayRateInput.value, NaN);
+        const eveningShift = parseNumber(eveningRateInput.value, NaN);
         const nightShift = parseNumber(nightRateInput.value, NaN);
-        if (!Number.isFinite(dayShift) || dayShift < 0 || !Number.isFinite(nightShift) || nightShift < 0) {
+        const dayHours = parseNumber(dayHoursInput.value, NaN);
+        const eveningHours = parseNumber(eveningHoursInput.value, NaN);
+        const nightHours = parseNumber(nightHoursInput.value, NaN);
+        if (
+          !Number.isFinite(dayShift) ||
+          dayShift < 0 ||
+          !Number.isFinite(eveningShift) ||
+          eveningShift < 0 ||
+          !Number.isFinite(nightShift) ||
+          nightShift < 0
+        ) {
           bookSettingsError.textContent = "Ставки мають бути числами 0 або більше.";
+          return;
+        }
+
+        if (
+          !Number.isFinite(dayHours) ||
+          dayHours < 1 ||
+          !Number.isFinite(eveningHours) ||
+          eveningHours < 1 ||
+          !Number.isFinite(nightHours) ||
+          nightHours < 1
+        ) {
+          bookSettingsError.textContent = "Тривалість змін має бути числом від 1 години.";
           return;
         }
 
@@ -4858,9 +5080,11 @@
         book.settings = normalizeBookSettings({
           rates: {
             dayShift,
+            eveningShift,
             nightShift,
-            dayHours: DEFAULT_DAY_SHIFT_HOURS,
-            nightHours: DEFAULT_NIGHT_SHIFT_HOURS
+            dayHours,
+            eveningHours,
+            nightHours
           },
           departments
         });
